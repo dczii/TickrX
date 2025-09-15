@@ -20,7 +20,7 @@ export async function POST(req: Response, res: NextApiResponse<Crypto10ApiRespon
     }
 
     const parsedSymbols = JSON.parse(symbols);
-    console.log("Symbols", parsedSymbols.join(","));
+
     // Build /simple/price URL using symbols (NOT ids)
     const params = new URLSearchParams({
       vs_currencies: "usd",
@@ -37,7 +37,6 @@ export async function POST(req: Response, res: NextApiResponse<Crypto10ApiRespon
       headers: { "User-Agent": "crypto-symbol-nextjs" },
       cache: "no-store",
     });
-    console.log("cgres", cgRes);
 
     if (!cgRes.ok) {
       const text = await cgRes.text();

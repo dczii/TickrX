@@ -1,7 +1,12 @@
 // pages/api/crypto10.ts
 import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
-import type { Crypto10ApiResponse, CGCoin, Pick } from "@/types/crypto";
+import type {
+  Crypto10ApiResponse,
+  CryptoBySymbolApiResponseError,
+  CGCoin,
+  Pick,
+} from "@/types/crypto";
 
 const CG_ENDPOINT =
   "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=200&page=1&sparkline=false&price_change_percentage=1h,24h,7d";
@@ -59,7 +64,10 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export async function GET(req: NextApiRequest, res: NextApiResponse<Crypto10ApiResponse>) {
+export async function GET(
+  req: NextApiRequest,
+  res: NextApiResponse<Crypto10ApiResponse | CryptoBySymbolApiResponseError>
+) {
   // Accept only GET (Pages Router style)
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
