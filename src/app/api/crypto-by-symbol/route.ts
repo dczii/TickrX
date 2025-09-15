@@ -1,8 +1,6 @@
-import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
-import type { Crypto10ApiResponse, CGCoin } from "@/types/crypto";
 
-export async function POST(req: Response, res: NextApiResponse<Crypto10ApiResponse>) {
+export async function POST(req: Request) {
   try {
     const { symbols } = await req.json();
 
@@ -83,13 +81,19 @@ export async function POST(req: Response, res: NextApiResponse<Crypto10ApiRespon
     });
 
     if (candidates.length === 0) {
-      return res.status(200).json({
-        timestamp: new Date().toISOString(),
-        source: "coingecko",
-        candidates: [],
-        picks: [],
-        note: "No results for provided symbols via simple/price. Try include_tokens=all or use /coins/markets.",
-      });
+      return new Response(
+        JSON.stringify({
+          timestamp: new Date().toISOString(),
+          source: "coingecko",
+          candidates: [],
+          picks: [],
+          note: "No results for provided symbols via simple/price. Try include_tokens=all or use /coins/markets.",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // Short reasoning via ChatGPT (optional)

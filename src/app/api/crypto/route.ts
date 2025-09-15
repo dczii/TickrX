@@ -64,16 +64,7 @@ const openai = new OpenAI({
   dangerouslyAllowBrowser: true,
 });
 
-export async function GET(
-  req: NextApiRequest,
-  res: NextApiResponse<Crypto10ApiResponse | CryptoBySymbolApiResponseError>
-) {
-  // Accept only GET (Pages Router style)
-  if (req.method !== "GET") {
-    res.setHeader("Allow", "GET");
-    return res.status(405).json({ error: "Method Not Allowed" });
-  }
-
+export async function GET() {
   try {
     // 1) Fetch live CoinGecko snapshot (no caching)
     const cgRes = await fetch(CG_ENDPOINT, {
@@ -83,7 +74,10 @@ export async function GET(
 
     if (!cgRes.ok) {
       const text = await cgRes.text();
-      return res.status(502).json({ error: "CoinGecko request failed", detail: text });
+      return new Response(JSON.stringify({ error: "CoinGecko request failed", detail: text }), {
+        status: 502,
+        headers: { "Content-Type": "application/json" },
+      });
     }
 
     const raw: CGCoin[] = await cgRes.json();
@@ -98,13 +92,19 @@ export async function GET(
     const candidates = ranked.map((r) => toCompact(r.coin));
 
     if (candidates.length === 0) {
-      return res.status(200).json({
-        timestamp: new Date().toISOString(),
-        source: "coingecko",
-        candidates: [],
-        picks: [],
-        note: "No suitable candidates found under current heuristic. Try relaxing filters.",
-      });
+      return new Response(
+        JSON.stringify({
+          timestamp: new Date().toISOString(),
+          source: "coingecko",
+          candidates: [],
+          picks: [],
+          note: "No suitable candidates found under current heuristic. Try relaxing filters.",
+        }),
+        {
+          status: 200,
+          headers: { "Content-Type": "application/json" },
+        }
+      );
     }
 
     // 3) Ask ChatGPT to pick best 10 (JSON)
@@ -166,6 +166,12 @@ ${JSON.stringify(candidates, null, 2)}
       }
     );
   } catch (e: any) {
-    return res.status(500).json({ error: "Unexpected error", detail: e?.message || String(e) });
+    return new Response(
+      JSON.stringify({ error: "Unexpected error", detail: e?.message || String(e) }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }
