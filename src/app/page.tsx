@@ -138,13 +138,13 @@ function FloatingScreenshot({ src, alt }: { src: string; alt: string }) {
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         className='relative'
       >
-        <div className='relative aspect-[16/9] w-full overflow-hidden rounded-xl border border-zinc-800'>
+        <div className='relative aspect-[16/9] w-full overflow-hidden'>
           <Image
             src={src}
             alt={alt}
             fill
             sizes='100vw'
-            className='object-contain'
+            className='object-contain rounded-xl overflow-hidden'
             priority={false}
           />
         </div>
@@ -159,7 +159,7 @@ export default function Page() {
       {/* Background Animation */}
       <AnimatedBackground />
 
-      <section className='w-full max-w-3xl px-6 py-16 relative z-10'>
+      <section className='w-full max-w-4xl px-6 py-16 relative z-10'>
         <motion.h1
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
