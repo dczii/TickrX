@@ -97,7 +97,7 @@ export async function POST(req: Request) {
     }
 
     // Short reasoning via ChatGPT (optional)
-    const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+    const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
     const system = "You are an expert crypto day trader. Be concise, pragmatic, and risk-aware.";
     const user = `
 Explain in 1–2 sentences why each candidate might move up to ~5% in the short term (day-trade window).

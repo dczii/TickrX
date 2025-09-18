@@ -30,7 +30,7 @@ Ensure "picks" length equals LIMIT and fields are populated. Use numbers where p
 `;
 
 const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
+  apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY,
 });
 
 export async function GET(_req: NextRequest) {
