@@ -1,48 +1,70 @@
 "use client";
 
 import { useEffect, useState } from "react";
-
-type Row = { symbol: string; name: string; price: number; change24h?: number };
+import type { StockPick, StocksApiResponse } from "@/types/stocks";
+import { toast } from "sonner";
+import { format } from "date-fns";
 
 export default function Stocks() {
-  const [rows, setRows] = useState<Row[]>([]);
+  const [stocks, setStocks] = useState<StockPick[] | null>(null);
+  const [data, setData] = useState<StocksApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const load = async () => {
-      setLoading(true);
-      const res = await fetch("/api/stock10");
-      setRows(await res.json());
-      setLoading(false);
+      try {
+        const res = await fetch("/api/stocks/top");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const json: StocksApiResponse = await res.json();
+        setStocks(json.picks || []);
+        setData(json);
+      } catch (err) {
+        toast.error("Something went wrong loading stocks.");
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
     };
     load();
   }, []);
 
   return (
-    <div className='rounded-2xl border border-slate-800 bg-slate-900/50 mt-6'>
-      <div className='grid grid-cols-12 text-xs uppercase tracking-wide text-slate-400 px-4 py-3'>
-        <div className='col-span-3'>Symbol</div>
-        <div className='col-span-5'>Name</div>
-        <div className='col-span-2 text-right'>Price</div>
-        <div className='col-span-2 text-right'>Change %</div>
-      </div>
-      <div className='divide-y divide-slate-800'>
-        {loading && <div className='p-6 text-sm text-slate-400'>Loading…</div>}
-        {rows.map((r) => (
-          <div key={r.symbol} className='grid grid-cols-12 px-4 py-3'>
-            <div className='col-span-3 font-semibold'>{r.symbol}</div>
-            <div className='col-span-5 text-slate-300'>{r.name}</div>
-            <div className='col-span-2 text-right'>${r.price.toLocaleString()}</div>
-            <div
-              className={`col-span-2 text-right ${
-                (r.change24h ?? 0) >= 0 ? "text-emerald-400" : "text-red-400"
-              }`}
-            >
-              {((r.change24h ?? 0) >= 0 ? "+" : "") + (r.change24h ?? 0).toFixed(2)}%
-            </div>
-          </div>
-        ))}
-      </div>
+    <div className='overflow-x-auto rounded-lg shadow-md'>
+      {data && <div className='mt-6'>Data as of: {format(data?.generated_at, "PPpp")}</div>}
+      <table className='min-w-full rounded-lg border-collapse bg-slate-900 text-slate-100 mt-3 overflow-hidden'>
+        <thead>
+          <tr className='bg-slate-800 text-left text-sm uppercase text-slate-400'>
+            <th className='px-4 py-3'>Name</th>
+            <th className='px-4 py-3'>Symbol</th>
+            <th className='px-4 py-3'>Price</th>
+            <th className='px-4 py-3'>Suggestion</th>
+          </tr>
+        </thead>
+        <tbody>
+          {stocks &&
+            stocks.map((stock, idx) => (
+              <tr
+                key={idx}
+                className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'
+              >
+                <td className='px-4 py-2 font-medium'>{stock.name}</td>
+                <td className='px-4 py-2'>{stock.symbol}</td>
+                <td className='px-4 py-2'>${Number(stock.current_price).toLocaleString()}</td>
+                <td
+                  className={`px-4 py-2 font-semibold ${
+                    stock.suggestion === "BUY"
+                      ? "text-emerald-400"
+                      : stock.suggestion === "SELL"
+                      ? "text-red-400"
+                      : "text-yellow-400"
+                  }`}
+                >
+                  {stock.suggestion}
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      </table>
     </div>
   );
 }

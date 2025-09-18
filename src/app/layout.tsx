@@ -1,4 +1,5 @@
 import { Toaster } from "sonner";
+import { Analytics } from "@vercel/analytics/next";
 
 import Header from "@/components/Header";
 import "./globals.css";

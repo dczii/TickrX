@@ -5,7 +5,7 @@ import Crypto from "@/components/Crypto";
 import Stocks from "@/components/Stocks";
 
 export default function Page() {
-  const [active, setActive] = useState<"crypto" | "stocks">("crypto");
+  const [active, setActive] = useState<"crypto" | "stocks">("stocks");
 
   return (
     <div className='px-4 py-10'>
