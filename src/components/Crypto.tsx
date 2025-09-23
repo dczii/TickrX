@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import type { Pick, Crypto10ApiResponse } from "@/types/crypto";
 import { toast } from "sonner";
-import RowLoader from "./crypto/RowLoader";
+import RowLoader from "./RowLoader";
 
 import TickerRow from "./crypto/TickerRow";
 

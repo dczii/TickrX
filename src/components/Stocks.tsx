@@ -1,17 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, memo } from "react";
 import type { StockPick, StocksApiResponse } from "@/types/stocks";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import RowLoader from "./RowLoader";
+import { useDrawer } from "./Drawer";
 
-export default function Stocks() {
+function Stocks() {
   const [stocks, setStocks] = useState<StockPick[] | null>(null);
   const [data, setData] = useState<StocksApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const { openDrawer } = useDrawer();
 
   useEffect(() => {
-    const load = async () => {
+    const loadData = async () => {
+      setLoading(true);
       try {
         const res = await fetch("/api/stocks/top");
         if (!res.ok) throw new Error("Failed to fetch");
@@ -25,7 +29,7 @@ export default function Stocks() {
         setLoading(false);
       }
     };
-    load();
+    loadData();
   }, []);
 
   return (
@@ -41,11 +45,29 @@ export default function Stocks() {
           </tr>
         </thead>
         <tbody>
+          {loading && (
+            <tr className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'>
+              <td className='px-4 py-2'>
+                <RowLoader />
+              </td>
+              <td className='px-4 py-2'>
+                <RowLoader />
+              </td>
+              <td className='px-4 py-2'>
+                <RowLoader />
+              </td>
+              <td className='px-4 py-2'>
+                <RowLoader />
+              </td>
+            </tr>
+          )}
+
           {stocks &&
             stocks.map((stock, idx) => (
               <tr
                 key={idx}
                 className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'
+                onClick={openDrawer}
               >
                 <td className='px-4 py-2 font-medium'>{stock.name}</td>
                 <td className='px-4 py-2'>{stock.symbol}</td>
@@ -68,3 +90,5 @@ export default function Stocks() {
     </div>
   );
 }
+
+export default memo(Stocks);
