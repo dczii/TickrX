@@ -84,7 +84,7 @@ For each of the last five quarters:
 Use professional tone. Be specific. If data is unavailable, state it briefly and proceed.`;
 }
 
-const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+const openai = new OpenAI({ apiKey: process.env.NEXT_PUBLIC_OPENAI_API_KEY });
 
 function getParams(req: NextRequest): { ticker?: string; companyName?: string } {
   const { searchParams } = new URL(req.url);
