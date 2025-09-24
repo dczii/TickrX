@@ -80,6 +80,7 @@ For each of the last five quarters:
 - What would change your view (upside/downside catalysts).
 - Present actionable takeaways in 3–5 bullets.
 
+
 Use professional tone. Be specific. If data is unavailable, state it briefly and proceed.`;
 }
 
@@ -101,13 +102,51 @@ async function callOpenAIAsJSON(systemPrompt: string) {
     messages: [
       {
         role: "system",
-        content: "You are a precise Wall Street equity analyst. Output must be valid JSON.",
+        content: `You are a precise Wall Street equity analyst. Output must be valid JSON.
+        Return ONLY valid JSON with EXACTLY these keys and structure (no extra keys, no prose):
+
+        {
+          "companyId": "string",
+          "companySnapshot": "string",
+          "bullCase": ["string"],
+          "bearCase": ["string"],
+          "warningSigns": ["string"],
+          "earningsLast5": [
+            {
+              "period": "string",
+              "revenue": { "actual": "string?", "consensus": "string?", "beatOrMiss": "beat|miss|inline?" },
+              "eps": { "actual": "string?", "consensus": "string?", "beatOrMiss": "beat|miss|inline?" },
+              "marginsCommentary": "string?",
+              "keyDrivers": ["string?"],
+              "notableOneOffs": ["string?"],
+              "fxImpact": "string?",
+              "managementTone": "string?",
+              "stockReaction": "string?"
+            }
+          ],
+          "guidanceOutlook": {
+            "latestGuidance": "string?",
+            "changes": "raised|lowered|reaffirmed|mixed|unknown?",
+            "vsConsensus": "above|below|inline|unknown?",
+            "nearTermView": "string?",
+            "midTermView": "string?"
+          },
+          "finalAssessment": {
+            "summary": "string",
+            "shortTerm": "string?",
+            "mediumTerm": "string?",
+            "longTerm": "string?",
+            "actionables": ["string?"],
+            "wouldChangeView": ["string?"]
+          }
+        }`,
       },
       { role: "user", content: systemPrompt },
     ],
   });
 
   const content = resp.choices?.[0]?.message?.content ?? "{}";
+  console;
   return JSON.parse(content) as AnalystJSON;
 }
 
@@ -141,7 +180,7 @@ export async function POST(req: NextRequest) {
     ok: true,
     ticker: ticker.toUpperCase(),
     companyName,
-    analysis,
+    analysis: analysis,
     promptUsed: prompt,
   };
 

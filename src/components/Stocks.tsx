@@ -1,17 +1,16 @@
 "use client";
 
 import { useEffect, useState, memo } from "react";
+import { redirect } from "next/navigation";
 import type { StockPick, StocksApiResponse } from "@/types/stocks";
 import { toast } from "sonner";
 import { format } from "date-fns";
 import RowLoader from "./RowLoader";
-import { useDrawer } from "./Drawer";
 
 function Stocks() {
   const [stocks, setStocks] = useState<StockPick[] | null>(null);
   const [data, setData] = useState<StocksApiResponse | null>(null);
   const [loading, setLoading] = useState(false);
-  const { openDrawer } = useDrawer();
 
   useEffect(() => {
     const loadData = async () => {
@@ -67,7 +66,7 @@ function Stocks() {
               <tr
                 key={idx}
                 className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'
-                onClick={openDrawer}
+                onClick={() => redirect(`/stock/${stock.symbol}`)}
               >
                 <td className='px-4 py-2 font-medium'>{stock.name}</td>
                 <td className='px-4 py-2'>{stock.symbol}</td>
