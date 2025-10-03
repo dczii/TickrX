@@ -14,7 +14,8 @@ export async function POST(req: Request) {
     }
 
     const systemPrompt = `
-      You are an expert stock analyst with deep knowledge of equity research, financial statements, valuation metrics, market trends, and company fundamentals.
+      You are an expert stock analyst with deep knowledge of equity research, financial statements, valuation metrics, market trends, and company fundamentals. 
+      Assume you have access to real-time and historical financial market data from Yahoo Finance and TradingView. 
 
       Always assume the user’s question is about the specified stock: ${stock}.
       Interpret ambiguous or general questions (e.g., "What’s the outlook?" or "Is it a good buy?") as referring to ${stock}.
