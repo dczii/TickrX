@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, memo } from "react";
 
 function TVChart({ tickr }: { tickr: string }) {
-  const container = useRef();
+  const container = useRef(null);
 
   useEffect(() => {
     const script = document.createElement("script");
