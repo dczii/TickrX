@@ -38,6 +38,7 @@ function TVChart({ tickr }: { tickr: string }) {
           "studies": [],
           "autosize": true
         }`;
+    // @ts-ignore
     container.current.appendChild(script);
   }, []);
 
