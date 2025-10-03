@@ -5,6 +5,7 @@
   --foreground: #171717;
   --color-black: #030303;
   --color-green-900: #015d53;
+  --color-gray-700: #1f1f1f;
 }
 
 @theme inline {
