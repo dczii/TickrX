@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, memo } from "react";
 import type { AnalystJSON } from "@/app/api/stock-analysis/route";
 import { toast } from "sonner";
 import TickrXSpinner from "@/components/TickrXSpinner";
@@ -9,7 +9,7 @@ type Props = {
   tickr: string;
 };
 
-export default function StockAnalysis({ tickr }: Props) {
+function StockAnalysis({ tickr }: Props) {
   const [data, setData] = useState<AnalystJSON | null>(null);
 
   useEffect(() => {
@@ -178,6 +178,8 @@ export default function StockAnalysis({ tickr }: Props) {
     </div>
   );
 }
+
+export default memo(StockAnalysis);
 
 /* --- Helper Section component --- */
 function Section({ title, items, color }: { title: string; items: string[]; color: string }) {
