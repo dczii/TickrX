@@ -42,16 +42,16 @@ export default function AskStock({ stock }: { stock: string }) {
 
   return (
     <div className='py-4 w-full'>
-      <div className='flex flex-row gap-4'>
+      <div className='flex flex-row gap-4 border rounded-full p-2 bg-[rgba(255,255,255,0.1)]'>
         <input
           placeholder='Ask your question...'
-          className='border p-2 w-full rounded'
+          className='p-2 w-full rounded outline-0'
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
         <button
           onClick={handleAsk}
-          className='bg-gray-700 text-white px-4 py-2 rounded cursor-pointer w-20'
+          className='text-white px-4 py-2 rounded cursor-pointer w-20 hover:scale-125 transition-all'
           disabled={loading}
         >
           {loading ? (

@@ -40,9 +40,6 @@ export default function StockAnalysis({ tickr }: Props) {
   }
   return (
     <div className='space-y-6 text-slate-100'>
-      {/* Header */}
-      <h1 className='text-2xl font-bold'>{data.companyId}</h1>
-
       {/* Bull Case */}
       <Section title='🐂 Bull Case' items={data.bullCase} color='text-emerald-400' />
 
@@ -53,7 +50,7 @@ export default function StockAnalysis({ tickr }: Props) {
       <Section title='⚠️ Warning Signs' items={data.warningSigns} color='text-yellow-400' />
 
       {/* Earnings */}
-      <div className='bg-green-900 p-6 rounded-2xl shadow-lg'>
+      <div className='bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg'>
         <h2 className='text-xl font-semibold mb-4'>📊 Last 5 Earnings Reports</h2>
         <div className='space-y-4'>
           {data.earningsLast5?.map((e, i) => (
@@ -105,7 +102,7 @@ export default function StockAnalysis({ tickr }: Props) {
       </div>
 
       {/* Guidance & Outlook */}
-      <div className='bg-green-900 p-6 rounded-2xl shadow-lg'>
+      <div className='bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg'>
         <h2 className='text-xl font-semibold mb-4'>📈 Guidance & Outlook</h2>
         <ul className='list-disc pl-6 space-y-1 text-slate-300'>
           {data.guidanceOutlook.latestGuidance && (
@@ -137,7 +134,7 @@ export default function StockAnalysis({ tickr }: Props) {
       </div>
 
       {/* Final Assessment */}
-      <div className='bg-green-900 p-6 rounded-2xl shadow-lg'>
+      <div className='bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg'>
         <h2 className='text-xl font-semibold mb-4'>📝 Final Assessment</h2>
         <p className='text-slate-300 mb-4'>{data.finalAssessment.summary}</p>
         <ul className='list-disc pl-6 space-y-1 text-slate-300'>
@@ -186,7 +183,7 @@ export default function StockAnalysis({ tickr }: Props) {
 function Section({ title, items, color }: { title: string; items: string[]; color: string }) {
   if (!items?.length) return null;
   return (
-    <div className='bg-green-900 p-6 rounded-2xl shadow-lg'>
+    <div className='bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg'>
       <h2 className={`text-xl font-semibold mb-4 ${color}`}>{title}</h2>
       <ul className='list-disc pl-6 space-y-1 text-slate-300'>
         {items.map((item, i) => (

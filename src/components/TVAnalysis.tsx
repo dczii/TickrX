@@ -26,6 +26,7 @@ function TradingViewWidget({ tickr }: Props) {
           "symbol": "NASDAQ:${tickr}",
           "showIntervalTabs": true
         }`;
+    console.log("container", container.current);
     // @ts-ignore
     container.current.appendChild(script);
   }, []);

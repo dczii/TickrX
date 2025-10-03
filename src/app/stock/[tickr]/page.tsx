@@ -1,6 +1,7 @@
 import StockAnalysis from "@/components/StockAnalysis";
 import TVNews from "@/components/TVNews";
 import TVAnalysis from "@/components/TVAnalysis";
+import TVChart from "@/components/TVChart";
 import AskStock from "@/components/AskStock";
 
 export default async function Page({ params }: { params: Promise<{ tickr: string }> }) {
@@ -10,6 +11,9 @@ export default async function Page({ params }: { params: Promise<{ tickr: string
     <div className='grid grid-cols-12 gap-4'>
       <div className='col-span-12'>
         <AskStock stock={tickr} />
+      </div>
+      <div className='col-span-12 h-[350px]'>
+        <TVChart tickr={tickr} />
       </div>
       <div className='col-span-12 lg:col-span-8'>
         <StockAnalysis tickr={tickr.toUpperCase()} />
