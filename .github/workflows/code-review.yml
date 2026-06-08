@@ -1,0 +1,46 @@
+name: Code Review Agent
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    needs: [test, lint, security]
+    # Allow review to run even if earlier jobs are in a different workflow file
+    # by using a composite check approach
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Get PR diff
+        run: |
+          git fetch origin ${{ github.base_ref }}
+          git diff origin/${{ github.base_ref }}...HEAD > pr.diff
+          echo "Diff size: $(wc -c < pr.diff) bytes"
+
+      - name: Read component registry
+        run: cp COMPONENT_REGISTRY.md registry.md
+
+      - name: Run Claude code review
+        run: |
+          node scripts/claude-review.js \
+            --diff pr.diff \
+            --registry registry.md \
+            --pr ${{ github.event.pull_request.number }}
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Clean up temp files
+        if: always()
+        run: rm -f pr.diff registry.md
