@@ -1,0 +1,48 @@
+name: Component Memory Agent
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+  push:
+    branches: [main]
+
+jobs:
+  inject-registry:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Post registry summary to PR
+        run: |
+          gh pr comment ${{ github.event.pull_request.number }} \
+            --body "$(cat COMPONENT_REGISTRY.md)"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  update-registry:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Scan merged diff for new components
+        run: node scripts/scan-components.js
+
+      - name: Commit registry update if changed
+        run: |
+          git config user.name "Component Memory Agent"
+          git config user.email "agent@tickrx.app"
+          git add COMPONENT_REGISTRY.md
+          git diff --staged --quiet || git commit -m "chore: update component registry [skip ci]"
+          git push
