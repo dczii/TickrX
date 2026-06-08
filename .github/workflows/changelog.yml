@@ -1,0 +1,45 @@
+name: Changelog Agent
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  changelog:
+    # Skip if the commit is from an agent to avoid infinite loops
+    if: |
+      !contains(github.event.head_commit.message, '[skip ci]') &&
+      !contains(github.event.head_commit.message, 'Changelog Agent') &&
+      !contains(github.event.head_commit.message, 'Component Memory Agent') &&
+      !contains(github.event.head_commit.message, 'Lint & Format Agent')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install conventional-changelog-cli
+        run: npm install -g conventional-changelog-cli
+
+      - name: Generate changelog
+        run: conventional-changelog -p angular -i CHANGELOG.md -s
+
+      - name: Commit changelog update
+        run: |
+          git config user.name "Changelog Agent"
+          git config user.email "agent@tickrx.app"
+          git add CHANGELOG.md
+          git diff --staged --quiet || git commit -m "docs: update changelog [skip ci]"
+          git push
+
+      - name: Trigger Component Memory Agent
+        run: |
+          gh workflow run component-memory.yml --ref main
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
