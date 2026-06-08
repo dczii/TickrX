@@ -1,0 +1,54 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": ["config:base"],
+  "schedule": ["before 9am on Monday"],
+  "timezone": "America/New_York",
+  "automerge": true,
+  "automergeType": "pr",
+  "automergeStrategy": "squash",
+  "platformAutomerge": true,
+  "labels": ["dependencies"],
+  "commitMessagePrefix": "chore(deps):",
+  "packageRules": [
+    {
+      "description": "Auto-merge patch and minor updates",
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true
+    },
+    {
+      "description": "Manual review for major version bumps",
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "major-update", "needs-review"],
+      "prPriority": 5
+    },
+    {
+      "description": "Manual review for Next.js — breaking changes are common",
+      "matchPackageNames": ["next"],
+      "automerge": false,
+      "labels": ["dependencies", "framework-update", "needs-review"]
+    },
+    {
+      "description": "Manual review for React major bumps",
+      "matchPackageNames": ["react", "react-dom"],
+      "matchUpdateTypes": ["major"],
+      "automerge": false,
+      "labels": ["dependencies", "framework-update", "needs-review"]
+    },
+    {
+      "description": "Group all @types/* updates together",
+      "matchPackagePatterns": ["^@types/"],
+      "groupName": "TypeScript type definitions",
+      "automerge": true
+    },
+    {
+      "description": "Group ESLint ecosystem updates",
+      "matchPackagePatterns": ["^eslint", "^@typescript-eslint/"],
+      "groupName": "ESLint",
+      "automerge": true
+    }
+  ],
+  "ignoreDeps": ["node"],
+  "prConcurrentLimit": 5,
+  "prHourlyLimit": 2
+}
