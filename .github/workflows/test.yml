@@ -1,0 +1,54 @@
+name: Test Agent
+
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run tests with coverage
+        run: npx jest --coverage --passWithNoTests
+
+      - name: Post coverage report
+        if: always() && github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const summaryPath = 'coverage/coverage-summary.json';
+            if (!fs.existsSync(summaryPath)) {
+              await github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: '## Test Coverage Report\nNo coverage data generated — add tests to `src/**/*.test.tsx`.'
+              });
+              return;
+            }
+            const data = JSON.parse(fs.readFileSync(summaryPath, 'utf8')).total;
+            const pct = (k) => `${data[k].pct}%`;
+            const icon = (k) => data[k].pct >= 80 ? '✅' : '❌';
+            const body = `## Test Coverage Report\n` +
+              `| Metric | % | Status |\n|---|---|---|\n` +
+              `| Lines | ${pct('lines')} | ${icon('lines')} |\n` +
+              `| Statements | ${pct('statements')} | ${icon('statements')} |\n` +
+              `| Functions | ${pct('functions')} | ${icon('functions')} |\n` +
+              `| Branches | ${pct('branches')} | ${data.branches.pct >= 75 ? '✅' : '❌'} |`;
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
