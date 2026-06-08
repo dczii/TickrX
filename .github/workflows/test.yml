@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref || github.ref }}
 
       - uses: actions/setup-node@v4
         with:
@@ -18,37 +21,21 @@ jobs:
 
       - run: npm ci
 
-      - name: Run tests with coverage
-        run: npx jest --coverage --passWithNoTests
+      - name: Run Test Agent (Claude agentic loop)
+        run: |
+          PR_ARG=""
+          if [ -n "${{ github.event.pull_request.number }}" ]; then
+            PR_ARG="--pr ${{ github.event.pull_request.number }}"
+          fi
+          node scripts/test-agent.js $PR_ARG
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Post coverage report
+      - name: Commit any test fixes applied by the agent
         if: always() && github.event_name == 'pull_request'
-        uses: actions/github-script@v7
+        uses: stefanzweifel/git-auto-commit-action@v5
         with:
-          script: |
-            const fs = require('fs');
-            const summaryPath = 'coverage/coverage-summary.json';
-            if (!fs.existsSync(summaryPath)) {
-              await github.rest.issues.createComment({
-                issue_number: context.issue.number,
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                body: '## Test Coverage Report\nNo coverage data generated — add tests to `src/**/*.test.tsx`.'
-              });
-              return;
-            }
-            const data = JSON.parse(fs.readFileSync(summaryPath, 'utf8')).total;
-            const pct = (k) => `${data[k].pct}%`;
-            const icon = (k) => data[k].pct >= 80 ? '✅' : '❌';
-            const body = `## Test Coverage Report\n` +
-              `| Metric | % | Status |\n|---|---|---|\n` +
-              `| Lines | ${pct('lines')} | ${icon('lines')} |\n` +
-              `| Statements | ${pct('statements')} | ${icon('statements')} |\n` +
-              `| Functions | ${pct('functions')} | ${icon('functions')} |\n` +
-              `| Branches | ${pct('branches')} | ${data.branches.pct >= 75 ? '✅' : '❌'} |`;
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              body
-            });
+          commit_message: "fix: auto-fix failing tests by Test Agent [skip ci]"
+          commit_user_name: "Test Agent"
+          commit_user_email: "agent@tickrx.app"
