@@ -1,0 +1,45 @@
+name: Security Agent
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: npm audit (critical)
+        run: npm audit --audit-level=critical
+
+      - name: Secret scan with gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for hardcoded env vars in source
+        run: |
+          if grep -rE '(POLYGON_API_KEY|FIREBASE_|ANTHROPIC_API_KEY|sk-[a-zA-Z0-9]{20,})\s*=\s*["'"'"'][^$]' src/ --include="*.ts" --include="*.tsx"; then
+            echo "❌ Hardcoded secret detected in source files"
+            exit 1
+          fi
+          echo "✅ No hardcoded secrets found"
+
+      - name: Verify .env files not committed
+        run: |
+          if git ls-files | grep -E '^\.env(\.|$)'; then
+            echo "❌ .env file is tracked by git — remove it and add to .gitignore"
+            exit 1
+          fi
+          echo "✅ No .env files committed"
