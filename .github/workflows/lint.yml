@@ -1,0 +1,33 @@
+name: Lint & Format Agent
+
+on:
+  pull_request:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Run Prettier
+        run: npx prettier --write .
+
+      - name: Run ESLint
+        run: npx eslint . --ext .ts,.tsx --max-warnings 0
+
+      - name: Commit formatting fixes
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "style: auto-format by Lint Agent [skip ci]"
+          commit_user_name: "Lint & Format Agent"
+          commit_user_email: "agent@tickrx.app"
