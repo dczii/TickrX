@@ -1,12 +1,7 @@
 // pages/api/crypto10.ts
-import type { NextApiRequest, NextApiResponse } from "next";
 import OpenAI from "openai";
-import type {
-  Crypto10ApiResponse,
-  CryptoBySymbolApiResponseError,
-  CGCoin,
-  Pick,
-} from "@/types/crypto";
+
+import type { CGCoin, Pick } from "@/types/crypto";
 
 const CG_ENDPOINT =
   "https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=volume_desc&per_page=200&page=1&sparkline=false&price_change_percentage=1h,24h,7d";
@@ -145,7 +140,7 @@ ${JSON.stringify(candidates, null, 2)}
       ],
     });
 
-    let aiJson: any = {};
+    let aiJson: { picks?: Pick[] } = {};
     try {
       aiJson = JSON.parse(chat.choices[0]?.message?.content || "{}");
     } catch {
@@ -158,16 +153,19 @@ ${JSON.stringify(candidates, null, 2)}
         timestamp: new Date().toISOString(),
         source: "coingecko",
         candidates,
-        picks: (aiJson.picks as Pick[] | undefined)?.slice(0, 10) ?? [],
+        picks: aiJson.picks?.slice(0, 10) ?? [],
       }),
       {
         status: 200,
         headers: { "Content-Type": "application/json" },
       }
     );
-  } catch (e: any) {
+  } catch (e) {
     return new Response(
-      JSON.stringify({ error: "Unexpected error", detail: e?.message || String(e) }),
+      JSON.stringify({
+        error: "Unexpected error",
+        detail: e instanceof Error ? e.message : String(e),
+      }),
       {
         status: 500,
         headers: { "Content-Type": "application/json" },

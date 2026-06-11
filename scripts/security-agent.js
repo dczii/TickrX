@@ -351,7 +351,12 @@ async function main() {
   }
 
   console.log("⚠️ Findings detected — entering Claude triage loop...");
-  console.log("Findings:", JSON.stringify(findings.npmAudit.summary), secretFindings.length, "secrets");
+  console.log(
+    "Findings:",
+    JSON.stringify(findings.npmAudit.summary),
+    secretFindings.length,
+    "secrets"
+  );
 
   let agentResult;
   try {

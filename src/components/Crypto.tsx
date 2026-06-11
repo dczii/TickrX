@@ -2,11 +2,12 @@
 
 import { useEffect, useState } from "react";
 import { format } from "date-fns";
-import type { Pick, Crypto10ApiResponse } from "@/types/crypto";
 import { toast } from "sonner";
-import RowLoader from "./RowLoader";
 
+import RowLoader from "./RowLoader";
 import TickerRow from "./crypto/TickerRow";
+
+import type { Pick, Crypto10ApiResponse } from "@/types/crypto";
 
 const FAVORITES_KEY = "tickrx-favorites";
 
@@ -73,32 +74,32 @@ export default function Crypto() {
   return (
     <>
       {responseData && (
-        <div className='mt-6'>Data as of: {format(responseData?.timestamp, "PPpp")}</div>
+        <div className="mt-6">Data as of: {format(responseData?.timestamp, "PPpp")}</div>
       )}
-      <div className='rounded-2xl border border-slate-800 bg-slate-900/50 mt-3'>
-        <div className='grid grid-cols-13 text-xs uppercase tracking-wide text-slate-400 px-4 py-3'>
+      <div className="rounded-2xl border border-slate-800 bg-slate-900/50 mt-3">
+        <div className="grid grid-cols-13 text-xs uppercase tracking-wide text-slate-400 px-4 py-3">
           {/* No title for favorite column */}
-          <div className='col-span-1'></div>
-          <div className='col-span-3'>Symbol</div>
-          <div className='col-span-5'>Name</div>
-          <div className='col-span-2 text-right'>Price</div>
-          <div className='col-span-2 text-right'>24h %</div>
+          <div className="col-span-1"></div>
+          <div className="col-span-3">Symbol</div>
+          <div className="col-span-5">Name</div>
+          <div className="col-span-2 text-right">Price</div>
+          <div className="col-span-2 text-right">24h %</div>
         </div>
-        <div className='divide-y divide-slate-800'>
+        <div className="divide-y divide-slate-800">
           {loading && (
-            <div className='grid grid-cols-13 px-4 py-3 h-10'>
-              <div className='col-span-1'></div>
-              <div className='col-span-3'>
+            <div className="grid grid-cols-13 px-4 py-3 h-10">
+              <div className="col-span-1"></div>
+              <div className="col-span-3">
                 <RowLoader />
               </div>
-              <div className='col-span-5'>
+              <div className="col-span-5">
                 <RowLoader />
               </div>
-              <div className='col-span-2'>
-                <RowLoader className='justify-end' />
+              <div className="col-span-2">
+                <RowLoader className="justify-end" />
               </div>
-              <div className='col-span-2'>
-                <RowLoader className='justify-end' />
+              <div className="col-span-2">
+                <RowLoader className="justify-end" />
               </div>
             </div>
           )}
