@@ -1,9 +1,9 @@
-import { Redirect } from 'expo-router';
-import { TrendingUp } from 'lucide-react-native';
-import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
-import { signInWithGoogle } from '@/src/lib/auth';
-import { useAuth } from '@/src/providers/AuthProvider';
+import { Redirect } from "expo-router";
+import { TrendingUp } from "lucide-react-native";
+import { useState } from "react";
+import { ActivityIndicator, Pressable, Text, View } from "react-native";
+import { signInWithGoogle } from "@/src/lib/auth";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function LoginScreen() {
   const { session, isLoading } = useAuth();
@@ -20,9 +20,7 @@ export default function LoginScreen() {
     try {
       await signInWithGoogle();
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Sign-in failed. Try again.'
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Sign-in failed. Try again.");
     } finally {
       setIsSigningIn(false);
     }
@@ -50,9 +48,7 @@ export default function LoginScreen() {
         {isSigningIn ? (
           <ActivityIndicator color="#0A0E14" />
         ) : (
-          <Text className="text-base font-semibold text-background">
-            Continue with Google
-          </Text>
+          <Text className="text-base font-semibold text-background">Continue with Google</Text>
         )}
       </Pressable>
 

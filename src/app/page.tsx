@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+
 import Crypto from "@/components/Crypto";
 import Stocks from "@/components/Stocks";
 
@@ -9,10 +10,10 @@ export default function Page() {
 
   return (
     <div>
-      <h1 className='text-2xl font-bold mb-6'>Market Dashboard</h1>
+      <h1 className="text-2xl font-bold mb-6">Market Dashboard</h1>
 
       {/* Buttons here */}
-      <div className='inline-flex rounded-2xl bg-slate-800 p-1 shadow'>
+      <div className="inline-flex rounded-2xl bg-slate-800 p-1 shadow">
         <button
           onClick={() => setActive("crypto")}
           className={`px-4 py-2 rounded-xl text-sm transition ${

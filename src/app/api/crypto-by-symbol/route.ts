@@ -131,7 +131,7 @@ ${JSON.stringify(
       ],
     });
 
-    let aiJson: any = {};
+    let aiJson: { picks?: unknown[] } = {};
     try {
       aiJson = JSON.parse(chat.choices[0]?.message?.content || "{}");
     } catch {
@@ -150,14 +150,12 @@ ${JSON.stringify(
         headers: { "Content-Type": "application/json" },
       }
     );
-  } catch (e: any) {
-    console.log("Error,", e.message);
-    return new Response(
-      JSON.stringify({ error: "Unexpected error", detail: e?.message || String(e) }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
-    );
+  } catch (e) {
+    const detail = e instanceof Error ? e.message : String(e);
+    console.error("Error,", detail);
+    return new Response(JSON.stringify({ error: "Unexpected error", detail }), {
+      status: 500,
+      headers: { "Content-Type": "application/json" },
+    });
   }
 }

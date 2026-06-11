@@ -1,12 +1,6 @@
-import type { Session } from '@supabase/supabase-js';
-import {
-  createContext,
-  useContext,
-  useEffect,
-  useState,
-  type ReactNode,
-} from 'react';
-import { supabase } from '@/src/lib/supabase';
+import type { Session } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
+import { supabase } from "@/src/lib/supabase";
 
 interface AuthContextValue {
   session: Session | null;
@@ -54,11 +48,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  return (
-    <AuthContext.Provider value={{ session, isLoading }}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={{ session, isLoading }}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth(): AuthContextValue {

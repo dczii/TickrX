@@ -1,6 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import OpenAI from "openai";
-import type { StocksApiResponse, StockPick, Body } from "@/types/stocks";
+
+import type { StockPick } from "@/types/stocks";
 
 export const runtime = "edge"; // optional: faster cold starts
 
@@ -98,10 +99,15 @@ export async function GET(_req: NextRequest) {
       }),
       { status: 200, headers: { "Content-Type": "application/json" } }
     );
-  } catch (err: any) {
-    return new Response(JSON.stringify({ error: err?.message ?? "Unexpected error" }), {
-      status: 500,
-      headers: { "Content-Type": "application/json" },
-    });
+  } catch (err) {
+    return new Response(
+      JSON.stringify({
+        error: err instanceof Error ? err.message : "Unexpected error",
+      }),
+      {
+        status: 500,
+        headers: { "Content-Type": "application/json" },
+      }
+    );
   }
 }

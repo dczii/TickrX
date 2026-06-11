@@ -1,15 +1,13 @@
-import { makeRedirectUri } from 'expo-auth-session';
-import * as QueryParams from 'expo-auth-session/build/QueryParams';
-import * as WebBrowser from 'expo-web-browser';
-import { Platform } from 'react-native';
-import type { Session } from '@supabase/supabase-js';
-import { supabase } from './supabase';
+import { makeRedirectUri } from "expo-auth-session";
+import * as QueryParams from "expo-auth-session/build/QueryParams";
+import * as WebBrowser from "expo-web-browser";
+import { Platform } from "react-native";
+import type { Session } from "@supabase/supabase-js";
+import { supabase } from "./supabase";
 
 WebBrowser.maybeCompleteAuthSession();
 
-export async function createSessionFromUrl(
-  url: string
-): Promise<Session | null> {
+export async function createSessionFromUrl(url: string): Promise<Session | null> {
   const { params, errorCode } = QueryParams.getQueryParams(url);
   if (errorCode) {
     throw new Error(errorCode);
@@ -34,26 +32,26 @@ export async function signInWithGoogle(): Promise<Session | null> {
   const redirectTo = makeRedirectUri();
 
   const { data, error } = await supabase.auth.signInWithOAuth({
-    provider: 'google',
+    provider: "google",
     options: {
       redirectTo,
-      skipBrowserRedirect: Platform.OS !== 'web',
+      skipBrowserRedirect: Platform.OS !== "web",
     },
   });
   if (error) {
     throw error;
   }
 
-  if (Platform.OS === 'web') {
+  if (Platform.OS === "web") {
     return null;
   }
 
   if (!data.url) {
-    throw new Error('No OAuth URL returned from Supabase');
+    throw new Error("No OAuth URL returned from Supabase");
   }
 
   const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-  if (result.type !== 'success') {
+  if (result.type !== "success") {
     return null;
   }
 

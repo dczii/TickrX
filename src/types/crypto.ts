@@ -12,7 +12,7 @@ export type Pick = {
 export type Crypto10ApiResponse = {
   timestamp: string;
   source: "coingecko";
-  candidates: any[];
+  candidates: unknown[];
   picks: Pick[];
   note?: string;
 };

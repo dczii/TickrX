@@ -1,7 +1,7 @@
-import { render, screen } from '@testing-library/react-native';
+import { render, screen } from "@testing-library/react-native";
 
 const mockGetSession = jest.fn();
-jest.mock('@/src/lib/supabase', () => ({
+jest.mock("@/src/lib/supabase", () => ({
   supabase: {
     auth: {
       getSession: (...args: unknown[]) => mockGetSession(...args),
@@ -12,8 +12,8 @@ jest.mock('@/src/lib/supabase', () => ({
   },
 }));
 
-jest.mock('expo-router', () => {
-  const { Text, View } = jest.requireActual('react-native');
+jest.mock("expo-router", () => {
+  const { Text, View } = jest.requireActual("react-native");
   function Stack({ children }: { children: React.ReactNode }) {
     return <View>{children}</View>;
   }
@@ -21,19 +21,19 @@ jest.mock('expo-router', () => {
   return { Stack };
 });
 
-jest.mock('expo-status-bar', () => ({
+jest.mock("expo-status-bar", () => ({
   StatusBar: () => null,
 }));
 
-import RootLayout from '../../app/_layout';
+import RootLayout from "../../app/_layout";
 
-describe('RootLayout', () => {
-  it('wraps the router stack in the auth provider', () => {
+describe("RootLayout", () => {
+  it("wraps the router stack in the auth provider", () => {
     mockGetSession.mockResolvedValue({ data: { session: null } });
 
     render(<RootLayout />);
 
-    expect(screen.getByText('screen:(tabs)')).toBeTruthy();
-    expect(screen.getByText('screen:login')).toBeTruthy();
+    expect(screen.getByText("screen:(tabs)")).toBeTruthy();
+    expect(screen.getByText("screen:login")).toBeTruthy();
   });
 });

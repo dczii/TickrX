@@ -7,7 +7,7 @@ type Props = {
 };
 
 function TVNews({ tickr }: Props) {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -25,18 +25,17 @@ function TVNews({ tickr }: Props) {
           "width": "100%",
           "height": 550
         }`;
-    // @ts-ignore
-    container.current.appendChild(script);
+    container.current?.appendChild(script);
   }, []);
 
   return (
-    <div className='tradingview-widget-container' ref={container}>
-      <div className='tradingview-widget-container__widget'></div>
-      <div className='tradingview-widget-copyright'>
+    <div className="tradingview-widget-container" ref={container}>
+      <div className="tradingview-widget-container__widget"></div>
+      <div className="tradingview-widget-copyright">
         <a
-          href='https://www.tradingview.com/news/top-providers/tradingview/'
-          rel='noopener nofollow'
-          target='_blank'
+          href="https://www.tradingview.com/news/top-providers/tradingview/"
+          rel="noopener nofollow"
+          target="_blank"
         ></a>
       </div>
     </div>

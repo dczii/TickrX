@@ -1,9 +1,9 @@
-import { LogOut } from 'lucide-react-native';
-import { useState } from 'react';
-import { Pressable, Text, View } from 'react-native';
-import { ScreenShell } from '@/src/components/ScreenShell';
-import { signOut } from '@/src/lib/auth';
-import { useAuth } from '@/src/providers/AuthProvider';
+import { LogOut } from "lucide-react-native";
+import { useState } from "react";
+import { Pressable, Text, View } from "react-native";
+import { ScreenShell } from "@/src/components/ScreenShell";
+import { signOut } from "@/src/lib/auth";
+import { useAuth } from "@/src/providers/AuthProvider";
 
 export default function ProfileScreen() {
   const { session } = useAuth();
@@ -14,9 +14,7 @@ export default function ProfileScreen() {
     try {
       await signOut();
     } catch (error) {
-      setErrorMessage(
-        error instanceof Error ? error.message : 'Sign-out failed. Try again.'
-      );
+      setErrorMessage(error instanceof Error ? error.message : "Sign-out failed. Try again.");
     }
   };
 
@@ -24,9 +22,7 @@ export default function ProfileScreen() {
     <ScreenShell title="Profile" subtitle="Account and preferences">
       <View className="rounded-2xl bg-surface p-5">
         <Text className="text-sm text-muted">Signed in as</Text>
-        <Text className="mt-1 text-base text-foreground">
-          {session?.user.email ?? 'Unknown'}
-        </Text>
+        <Text className="mt-1 text-base text-foreground">{session?.user.email ?? "Unknown"}</Text>
       </View>
 
       <Pressable
@@ -40,9 +36,7 @@ export default function ProfileScreen() {
       </Pressable>
 
       {errorMessage ? (
-        <Text className="mt-4 text-center text-sm text-bear">
-          {errorMessage}
-        </Text>
+        <Text className="mt-4 text-center text-sm text-bear">{errorMessage}</Text>
       ) : null}
     </ScreenShell>
   );

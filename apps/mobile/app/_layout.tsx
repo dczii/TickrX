@@ -1,7 +1,7 @@
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { AuthProvider } from '@/src/providers/AuthProvider';
-import '../global.css';
+import { Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { AuthProvider } from "@/src/providers/AuthProvider";
+import "../global.css";
 
 export default function RootLayout() {
   return (
@@ -10,7 +10,7 @@ export default function RootLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          contentStyle: { backgroundColor: '#0A0E14' },
+          contentStyle: { backgroundColor: "#0A0E14" },
         }}
       >
         <Stack.Screen name="(tabs)" />
