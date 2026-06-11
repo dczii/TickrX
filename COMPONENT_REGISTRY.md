@@ -217,6 +217,48 @@
 
 ---
 
+## ScreenShell (mobile)
+
+- **File:** `apps/mobile/src/components/ScreenShell.tsx`
+- **Props:**
+  ```typescript
+  interface ScreenShellProps {
+    title: string;
+    subtitle?: string;
+    children?: ReactNode;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <ScreenShell title="Markets" subtitle="Search, movers, and sectors">{children}</ScreenShell>
+  ```
+- **Used in:** Home, Markets, Portfolio, Profile tab screens
+- **Last updated:** 2026-06-11
+- **Notes:** Safe-area screen wrapper with dark-terminal header. Use for every tab screen in the Expo app.
+
+---
+
+## AuthProvider (mobile)
+
+- **File:** `apps/mobile/src/providers/AuthProvider.tsx`
+- **Props:**
+  ```typescript
+  interface AuthContextValue {
+    session: Session | null;
+    isLoading: boolean;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <AuthProvider>{children}</AuthProvider>
+  // const { session, isLoading } = useAuth();
+  ```
+- **Used in:** Root layout; consumed by login screen and tab layout auth gate
+- **Last updated:** 2026-06-11
+- **Notes:** Restores persisted Supabase session on mount and subscribes to auth state changes. Never read `supabase.auth` directly in components — use `useAuth()`.
+
+---
+
 ## Preferred Libraries (check before writing custom)
 
 | Need | Library | Already installed |
