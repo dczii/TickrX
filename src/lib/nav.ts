@@ -1,4 +1,4 @@
-import { Home, LineChart, Briefcase, User, Settings, type LucideIcon } from "lucide-react";
+import { Home, LineChart, Star, Briefcase, User, Settings, type LucideIcon } from "lucide-react";
 
 export interface NavItem {
   label: string;
@@ -9,6 +9,7 @@ export interface NavItem {
 export const NAV_ITEMS: NavItem[] = [
   { label: "Home", href: "/dashboard", icon: Home },
   { label: "Markets", href: "/markets", icon: LineChart },
+  { label: "Watchlist", href: "/watchlist", icon: Star },
   { label: "Portfolio", href: "/portfolio", icon: Briefcase },
   { label: "Profile", href: "/profile", icon: User },
   { label: "Settings", href: "/settings", icon: Settings },

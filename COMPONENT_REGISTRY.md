@@ -5,6 +5,111 @@
 
 ---
 
+## DataTable (web)
+
+- **File:** `src/components/markets/DataTable.tsx`
+- **Props:**
+  ```typescript
+  interface Column<T> {
+    key: keyof T;
+    label: string;
+    sortable?: boolean;
+    align?: "left" | "right";
+    render?: (row: T) => ReactNode;
+  }
+  interface DataTableProps<T> {
+    columns: Column<T>[];
+    rows: T[];
+    rowKey: (row: T) => string;
+    initialSortKey?: keyof T;
+    initialSortDir?: "asc" | "desc";
+    onRowClick?: (row: T) => void;
+    caption?: string;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <DataTable columns={columns} rows={rows} rowKey={(r) => r.symbol} initialSortKey="changePct" />
+  ```
+- **Used in:** MarketsTable
+- **Last updated:** 2026-06-15
+- **Notes:** Generic client-side sortable table primitive. Click a sortable header to sort; toggles asc/desc. Sets `aria-sort`. Use for all tabular data.
+
+---
+
+## ChangeChip (web)
+
+- **File:** `src/components/markets/ChangeChip.tsx`
+- **Props:** `{ value: number; showIcon?: boolean }`
+- **Usage:**
+  ```tsx
+  <ChangeChip value={2.4} />
+  ```
+- **Used in:** MarketsTable
+- **Last updated:** 2026-06-15
+- **Notes:** `+2.40%` / `-1.10%` coloured badge (emerald up / red down) with Lucide arrow. Use for every percentage-change display.
+
+---
+
+## PriceTick (web)
+
+- **File:** `src/components/markets/PriceTick.tsx`
+- **Props:** `{ price: number; flashDuration?: number }`
+- **Usage:**
+  ```tsx
+  <PriceTick price={229.87} />
+  ```
+- **Used in:** MarketsTable
+- **Last updated:** 2026-06-15
+- **Notes:** Monospace price cell that flashes green/red for ~600ms when the value changes (live WebSocket ticks). Sets `data-flash="up|down|none"`.
+
+---
+
+## SectorHeatmap (web)
+
+- **File:** `src/components/markets/SectorHeatmap.tsx`
+- **Props:** `{ sectors: { name: string; changePct: number }[] }`
+- **Usage:**
+  ```tsx
+  <SectorHeatmap sectors={sectors} />
+  ```
+- **Used in:** MarketsView
+- **Last updated:** 2026-06-15
+- **Notes:** CSS-grid tiles coloured by `heatmapColor()` (green→red by day change %). 11 GICS sectors.
+
+---
+
+## SearchModal (web)
+
+- **File:** `src/components/markets/SearchModal.tsx`
+- **Props:**
+  ```typescript
+  interface SearchModalProps {
+    onSearch: (query: string) => Promise<{ symbol: string; name: string }[]>;
+    onSelect: (symbol: string) => void;
+    debounceMs?: number;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <SearchModal onSearch={searchTickers} onSelect={(s) => toggle(s)} />
+  ```
+- **Used in:** MarketsView
+- **Last updated:** 2026-06-15
+- **Notes:** ⌘K/Ctrl+K overlay, debounced search, arrow-key navigation, Escape to close. Pass an async `onSearch`; results are keyboard-selectable.
+
+---
+
+## WatchlistPanel (web)
+
+- **File:** `src/components/markets/WatchlistPanel.tsx`
+- **Props:** `{ symbols: string[]; selected?: string | null; onSelect: (s) => void; onRemove: (s) => void }`
+- **Used in:** MarketsView, WatchlistView
+- **Last updated:** 2026-06-15
+- **Notes:** Presentational watchlist list with hover-X remove. State/persistence comes from the `useWatchlist(userId, initial)` hook (`src/components/markets/useWatchlist.ts`), which wraps `src/lib/watchlist.ts` + Supabase Realtime.
+
+---
+
 ## TickerRow
 
 - **File:** `src/components/crypto/TickerRow.tsx`

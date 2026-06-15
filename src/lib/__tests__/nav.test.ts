@@ -1,10 +1,11 @@
 import { NAV_ITEMS } from "@/lib/nav";
 
 describe("NAV_ITEMS", () => {
-  it("exposes the five primary destinations in order", () => {
+  it("exposes the primary destinations in order", () => {
     expect(NAV_ITEMS.map((item) => item.label)).toEqual([
       "Home",
       "Markets",
+      "Watchlist",
       "Portfolio",
       "Profile",
       "Settings",
@@ -15,6 +16,7 @@ describe("NAV_ITEMS", () => {
     expect(NAV_ITEMS.map((item) => item.href)).toEqual([
       "/dashboard",
       "/markets",
+      "/watchlist",
       "/portfolio",
       "/profile",
       "/settings",
