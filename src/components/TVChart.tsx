@@ -2,7 +2,7 @@
 import React, { useEffect, useRef, memo } from "react";
 
 function TVChart({ tickr }: { tickr: string }) {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -38,18 +38,17 @@ function TVChart({ tickr }: { tickr: string }) {
           "studies": [],
           "autosize": true
         }`;
-    // @ts-ignore
-    container.current.appendChild(script);
+    container.current?.appendChild(script);
   }, []);
 
   return (
     <div
-      className='tradingview-widget-container'
+      className="tradingview-widget-container"
       ref={container}
       style={{ height: "350px", width: "100%" }}
     >
       <div
-        className='tradingview-widget-container__widget'
+        className="tradingview-widget-container__widget"
         style={{ height: "350px", width: "100%" }}
       ></div>
     </div>

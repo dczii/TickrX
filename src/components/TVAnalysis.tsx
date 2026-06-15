@@ -6,7 +6,7 @@ type Props = {
 };
 
 function TradingViewWidget({ tickr }: Props) {
-  const container = useRef(null);
+  const container = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const script = document.createElement("script");
@@ -26,19 +26,17 @@ function TradingViewWidget({ tickr }: Props) {
           "symbol": "NASDAQ:${tickr}",
           "showIntervalTabs": true
         }`;
-    console.log("container", container.current);
-    // @ts-ignore
-    container.current.appendChild(script);
+    container.current?.appendChild(script);
   }, []);
 
   return (
-    <div className='tradingview-widget-container' ref={container}>
-      <div className='tradingview-widget-container__widget'></div>
-      <div className='tradingview-widget-copyright'>
+    <div className="tradingview-widget-container" ref={container}>
+      <div className="tradingview-widget-container__widget"></div>
+      <div className="tradingview-widget-copyright">
         <a
-          href='https://www.tradingview.com/symbols/NASDAQ-AAPL/technicals/'
-          rel='noopener nofollow'
-          target='_blank'
+          href="https://www.tradingview.com/symbols/NASDAQ-AAPL/technicals/"
+          rel="noopener nofollow"
+          target="_blank"
         ></a>
       </div>
     </div>

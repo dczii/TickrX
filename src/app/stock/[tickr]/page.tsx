@@ -8,17 +8,17 @@ export default async function Page({ params }: { params: Promise<{ tickr: string
   const { tickr } = await params;
 
   return (
-    <div className='grid grid-cols-12 gap-4'>
-      <div className='col-span-12'>
+    <div className="grid grid-cols-12 gap-4">
+      <div className="col-span-12">
         <AskStock stock={tickr} />
       </div>
-      <div className='col-span-12 h-[350px]'>
+      <div className="col-span-12 h-[350px]">
         <TVChart tickr={tickr} />
       </div>
-      <div className='col-span-12 lg:col-span-8'>
+      <div className="col-span-12 lg:col-span-8">
         <StockAnalysis tickr={tickr.toUpperCase()} />
       </div>
-      <div className='col-span-12 lg:col-span-4'>
+      <div className="col-span-12 lg:col-span-4">
         <TVAnalysis tickr={tickr.toUpperCase()} />
         <TVNews tickr={tickr.toUpperCase()} />
       </div>

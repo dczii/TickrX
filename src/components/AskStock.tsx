@@ -41,25 +41,25 @@ export default function AskStock({ stock }: { stock: string }) {
   }
 
   return (
-    <div className='py-4 w-full'>
-      <div className='flex flex-row gap-4 border rounded-full p-2 bg-[rgba(255,255,255,0.1)]'>
+    <div className="py-4 w-full">
+      <div className="flex flex-row gap-4 border rounded-full p-2 bg-[rgba(255,255,255,0.1)]">
         <input
-          placeholder='Ask your question...'
-          className='p-2 w-full rounded outline-0'
+          placeholder="Ask your question..."
+          className="p-2 w-full rounded outline-0"
           value={question}
           onChange={(e) => setQuestion(e.target.value)}
         />
         <button
           onClick={handleAsk}
-          className='text-white px-4 py-2 rounded cursor-pointer w-20 hover:scale-125 transition-all'
+          className="text-white px-4 py-2 rounded cursor-pointer w-20 hover:scale-125 transition-all"
           disabled={loading}
         >
           {loading ? (
-            <div className='flex space-x-2'>
+            <div className="flex space-x-2">
               {[0, 1, 2].map((i) => (
                 <motion.span
                   key={i}
-                  className='w-2 h-2 bg-green-900 rounded-full'
+                  className="w-2 h-2 bg-green-900 rounded-full"
                   animate={{ scale: [1, 1.5, 1], opacity: [1, 0.5, 1] }}
                   transition={{
                     duration: 0.8,
@@ -76,14 +76,14 @@ export default function AskStock({ stock }: { stock: string }) {
         </button>
       </div>
       {answer && (
-        <div className='mt-4 border p-3 rounded bg-gray-700 text-white'>
-          <p className='whitespace-pre-wrap'>
+        <div className="mt-4 border p-3 rounded bg-gray-700 text-white">
+          <p className="whitespace-pre-wrap">
             {answer.split("").map((char, i) => (
               <motion.span
                 key={i}
                 variants={letterVariant}
-                initial='hidden'
-                animate='visible'
+                initial="hidden"
+                animate="visible"
                 custom={i}
                 style={{ display: "inline-block" }}
               >

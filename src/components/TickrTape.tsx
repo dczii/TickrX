@@ -2,7 +2,6 @@
 
 import * as React from "react";
 import { useRef, useEffect } from "react";
-import Script from "next/script";
 
 export function TickerTape() {
   const container = useRef<HTMLDivElement>(null);
@@ -61,16 +60,16 @@ export function TickerTape() {
   }, []);
 
   return (
-    <div className='tradingview-widget-container mb-2 md:min-h-20 min-h-28' ref={container}>
-      <div className='tradingview-widget-container__widget'></div>
-      <div className='tradingview-widget-copyright flex justify-end mr-2'>
+    <div className="tradingview-widget-container mb-2 md:min-h-20 min-h-28" ref={container}>
+      <div className="tradingview-widget-container__widget"></div>
+      <div className="tradingview-widget-copyright flex justify-end mr-2">
         <a
-          href='https://www.tradingview.com/'
-          rel='noopener nofollow'
-          target='_blank'
-          className='justify-end text-right'
+          href="https://www.tradingview.com/"
+          rel="noopener nofollow"
+          target="_blank"
+          className="justify-end text-right"
         >
-          <span className=''>Track all markets on TradingView</span>
+          <span className="">Track all markets on TradingView</span>
         </a>
       </div>
     </div>

@@ -2,10 +2,12 @@
 
 import { useEffect, useState, memo } from "react";
 import { redirect } from "next/navigation";
-import type { StockPick, StocksApiResponse } from "@/types/stocks";
 import { toast } from "sonner";
 import { format } from "date-fns";
+
 import RowLoader from "./RowLoader";
+
+import type { StockPick, StocksApiResponse } from "@/types/stocks";
 
 function Stocks() {
   const [stocks, setStocks] = useState<StockPick[] | null>(null);
@@ -32,30 +34,30 @@ function Stocks() {
   }, []);
 
   return (
-    <div className='overflow-x-auto rounded-lg shadow-md'>
-      {data && <div className='mt-6'>Data as of: {format(data?.generated_at, "PPpp")}</div>}
-      <table className='min-w-full rounded-lg border-collapse bg-slate-900 text-slate-100 mt-3 overflow-hidden'>
+    <div className="overflow-x-auto rounded-lg shadow-md">
+      {data && <div className="mt-6">Data as of: {format(data?.generated_at, "PPpp")}</div>}
+      <table className="min-w-full rounded-lg border-collapse bg-slate-900 text-slate-100 mt-3 overflow-hidden">
         <thead>
-          <tr className='bg-slate-800 text-left text-sm uppercase text-slate-400'>
-            <th className='px-4 py-3'>Name</th>
-            <th className='px-4 py-3'>Symbol</th>
-            <th className='px-4 py-3'>Price</th>
-            <th className='px-4 py-3'>Suggestion</th>
+          <tr className="bg-slate-800 text-left text-sm uppercase text-slate-400">
+            <th className="px-4 py-3">Name</th>
+            <th className="px-4 py-3">Symbol</th>
+            <th className="px-4 py-3">Price</th>
+            <th className="px-4 py-3">Suggestion</th>
           </tr>
         </thead>
         <tbody>
           {loading && (
-            <tr className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'>
-              <td className='px-4 py-2'>
+            <tr className="border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer">
+              <td className="px-4 py-2">
                 <RowLoader />
               </td>
-              <td className='px-4 py-2'>
+              <td className="px-4 py-2">
                 <RowLoader />
               </td>
-              <td className='px-4 py-2'>
+              <td className="px-4 py-2">
                 <RowLoader />
               </td>
-              <td className='px-4 py-2'>
+              <td className="px-4 py-2">
                 <RowLoader />
               </td>
             </tr>
@@ -65,19 +67,19 @@ function Stocks() {
             stocks.map((stock, idx) => (
               <tr
                 key={idx}
-                className='border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer'
+                className="border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer"
                 onClick={() => redirect(`/stock/${stock.symbol}`)}
               >
-                <td className='px-4 py-2 font-medium'>{stock.name}</td>
-                <td className='px-4 py-2'>{stock.symbol}</td>
-                <td className='px-4 py-2'>${Number(stock.current_price).toLocaleString()}</td>
+                <td className="px-4 py-2 font-medium">{stock.name}</td>
+                <td className="px-4 py-2">{stock.symbol}</td>
+                <td className="px-4 py-2">${Number(stock.current_price).toLocaleString()}</td>
                 <td
                   className={`px-4 py-2 font-semibold ${
                     stock.suggestion === "BUY"
                       ? "text-emerald-400"
                       : stock.suggestion === "SELL"
-                      ? "text-red-400"
-                      : "text-yellow-400"
+                        ? "text-red-400"
+                        : "text-yellow-400"
                   }`}
                 >
                   {stock.suggestion}

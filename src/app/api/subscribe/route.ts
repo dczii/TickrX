@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
       status: 200,
       headers: { "Content-Type": "application/json" },
     });
-  } catch (err: any) {
+  } catch (err) {
     console.error(err);
     return new Response(JSON.stringify({ error: "Failed to subscribe" }), {
       status: 500,

@@ -1,5 +1,5 @@
 // app/api/stock-analysis/route.ts
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 import OpenAI from "openai";
 
 type StockAnalysisRequest = { ticker?: string; companyName?: string } | undefined;
@@ -146,7 +146,6 @@ async function callOpenAIAsJSON(systemPrompt: string) {
   });
 
   const content = resp.choices?.[0]?.message?.content ?? "{}";
-  console;
   return JSON.parse(content) as AnalystJSON;
 }
 
