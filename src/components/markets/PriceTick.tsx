@@ -32,9 +32,9 @@ export default function PriceTick({ price, flashDuration = 600 }: PriceTickProps
 
   const flashClass =
     flash === "up"
-      ? "bg-emerald-500/20 text-emerald-300"
+      ? "bg-accent-soft text-accent"
       : flash === "down"
-        ? "bg-red-500/20 text-red-300"
+        ? "bg-danger-soft text-danger"
         : "";
 
   return (

@@ -51,9 +51,7 @@ export default function MarketsTable({
               e.stopPropagation();
               onToggleWatch(row.symbol);
             }}
-            className={
-              watched.has(row.symbol) ? "text-amber-400" : "text-slate-600 hover:text-slate-300"
-            }
+            className={watched.has(row.symbol) ? "text-amber" : "text-faint hover:text-mid"}
           >
             <Star
               size={14}
@@ -61,14 +59,14 @@ export default function MarketsTable({
               aria-hidden="true"
             />
           </button>
-          <span className="font-mono font-semibold text-slate-100">{row.symbol}</span>
+          <span className="font-mono font-semibold text-hi">{row.symbol}</span>
         </div>
       ),
     },
     {
       key: "name",
       label: "Name",
-      render: (row) => <span className="text-slate-400">{row.name}</span>,
+      render: (row) => <span className="text-mid">{row.name}</span>,
     },
     {
       key: "price",
@@ -103,7 +101,7 @@ export default function MarketsTable({
       label: "52w H/L",
       align: "right",
       render: (row) => (
-        <span className="font-mono text-xs tabular-nums text-slate-400">
+        <span className="font-mono text-xs tabular-nums text-mid">
           {row.high52.toFixed(2)} / {row.low52.toFixed(2)}
         </span>
       ),

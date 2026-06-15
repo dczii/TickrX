@@ -1,35 +1,99 @@
 @import "tailwindcss";
 
+/*
+ * TickrX design tokens — mirrors the prototype's "SA" trading-terminal palette
+ * (warm-neutral charcoals, mint green, soft red). See TickrX_Prototype.html.
+ */
 :root {
-  --bg: #030303;
-  --surface: #0f0f0f;
-  --surface-2: #1e293b;
-  --accent-green: #10b981;
-  --accent-red: #ef4444;
-  --text-primary: #f1f5f9;
-  --text-muted: #94a3b8;
-  --border: #27272a;
+  --bg: #0a0b0d;
+  --surface: #131519;
+  --surface-2: #1a1d23;
+  --surface-3: #22262e;
+  --border: #262a31;
+  --border-soft: #1c1f25;
+
+  --hi: #e8eaed;
+  --mid: #9ba1ac;
+  --dim: #5c636e;
+  --faint: #3a3f47;
+
+  --accent: #2bd68a;
+  --accent-soft: rgba(43, 214, 138, 0.14);
+  --on-accent: #06140c;
+  --danger: #ff5c72;
+  --danger-soft: rgba(255, 92, 114, 0.14);
+  --on-danger: #1a0408;
+  --amber: #e8b339;
+  --info: #5b8def;
+
+  /* legacy aliases still referenced via bg-[var(--…)] */
+  --surface: #131519;
+  --text-primary: var(--hi);
+  --text-muted: var(--mid);
+  --accent-green: var(--accent);
+  --accent-red: var(--danger);
 }
 
 @theme inline {
   --color-bg: var(--bg);
   --color-surface: var(--surface);
   --color-surface-2: var(--surface-2);
-  --color-accent-green: var(--accent-green);
-  --color-accent-red: var(--accent-red);
-  --color-text-primary: var(--text-primary);
-  --color-text-muted: var(--text-muted);
+  --color-surface-3: var(--surface-3);
+  --color-edge: var(--border);
+  --color-edge-soft: var(--border-soft);
+
+  --color-hi: var(--hi);
+  --color-mid: var(--mid);
+  --color-dim: var(--dim);
+  --color-faint: var(--faint);
+
+  --color-accent: var(--accent);
+  --color-accent-soft: var(--accent-soft);
+  --color-on-accent: var(--on-accent);
+  --color-danger: var(--danger);
+  --color-danger-soft: var(--danger-soft);
+  --color-on-danger: var(--on-danger);
+  --color-amber: var(--amber);
+  --color-info: var(--info);
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 body {
   background: var(--bg);
-  color: var(--text-primary);
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  color: var(--hi);
+  font-family:
+    var(--font-geist-sans),
+    -apple-system,
+    system-ui,
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
 }
 
 .tabular-nums {
   font-family: var(--font-geist-mono), ui-monospace, monospace;
   font-variant-numeric: tabular-nums;
+}
+
+/* thin terminal scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--surface-3);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* uppercase section label, à la prototype <Eyebrow> */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--dim);
 }

@@ -15,7 +15,7 @@ describe("PriceTick", () => {
 
     rerender(<PriceTick price={101} />);
     expect(cell).toHaveAttribute("data-flash", "up");
-    expect(cell.className).toContain("emerald");
+    expect(cell.className).toContain("accent");
   });
 
   it("flashes red when the price decreases", () => {

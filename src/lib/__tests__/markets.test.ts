@@ -24,14 +24,17 @@ const row = (symbol: string, changePct: number, price = 100): MarketRow => ({
 });
 
 describe("heatmapColor", () => {
-  it("maps change ranges to green/red intensities", () => {
-    expect(heatmapColor(3)).toBe("bg-emerald-600");
-    expect(heatmapColor(1)).toBe("bg-emerald-700");
-    expect(heatmapColor(0.2)).toBe("bg-emerald-900");
-    expect(heatmapColor(0)).toBe("bg-zinc-700");
-    expect(heatmapColor(-0.2)).toBe("bg-red-900");
-    expect(heatmapColor(-1)).toBe("bg-red-700");
-    expect(heatmapColor(-5)).toBe("bg-red-600");
+  it("returns mint green for gains, soft red for losses", () => {
+    expect(heatmapColor(3)).toMatch(/^rgba\(43, 214, 138,/);
+    expect(heatmapColor(0)).toMatch(/^rgba\(43, 214, 138,/);
+    expect(heatmapColor(-1)).toMatch(/^rgba\(255, 92, 114,/);
+  });
+
+  it("scales alpha by magnitude, capped at ±2.2%", () => {
+    expect(heatmapColor(3)).toBe("rgba(43, 214, 138, 0.52)");
+    expect(heatmapColor(2.2)).toBe("rgba(43, 214, 138, 0.52)");
+    expect(heatmapColor(0)).toBe("rgba(43, 214, 138, 0.1)");
+    expect(heatmapColor(-2.2)).toBe("rgba(255, 92, 114, 0.52)");
   });
 });
 

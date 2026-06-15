@@ -7,13 +7,13 @@ describe("ChangeChip", () => {
     render(<ChangeChip value={2.4} />);
     const chip = screen.getByRole("status");
     expect(chip).toHaveTextContent("+2.40%");
-    expect(chip.className).toContain("text-emerald-400");
+    expect(chip.className).toContain("text-accent");
   });
 
   it("renders a negative change in red", () => {
     render(<ChangeChip value={-1.1} />);
     const chip = screen.getByRole("status");
     expect(chip).toHaveTextContent("-1.10%");
-    expect(chip.className).toContain("text-red-400");
+    expect(chip.className).toContain("text-danger");
   });
 });

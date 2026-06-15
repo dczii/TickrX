@@ -19,8 +19,8 @@ export default function WatchlistView({ userId, initialWatchlist }: WatchlistVie
 
   return (
     <section>
-      <h1 className="text-2xl font-bold text-slate-100">Watchlist</h1>
-      <p className="mt-1 text-sm text-slate-400">Track tickers and view live charts.</p>
+      <h1 className="text-2xl font-bold text-hi">Watchlist</h1>
+      <p className="mt-1 text-sm text-mid">Track tickers and view live charts.</p>
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
         <WatchlistPanel
@@ -30,13 +30,13 @@ export default function WatchlistView({ userId, initialWatchlist }: WatchlistVie
           onRemove={(s) => remove(s)}
         />
 
-        <div className="min-h-[400px] rounded-xl border border-zinc-800 bg-[var(--surface)] p-4">
+        <div className="min-h-[400px] rounded-xl border border-edge bg-[var(--surface)] p-4">
           {active ? (
             <div className="h-[400px]">
               <TVChart tickr={active} />
             </div>
           ) : (
-            <p className="grid h-full place-items-center text-sm text-slate-500">
+            <p className="grid h-full place-items-center text-sm text-dim">
               Select a ticker to view its chart.
             </p>
           )}

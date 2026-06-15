@@ -15,8 +15,8 @@ export default function ChangeChip({ value, showIcon = true }: ChangeChipProps) 
     <span
       role="status"
       aria-label={`${positive ? "Up" : "Down"} ${Math.abs(value).toFixed(2)} percent`}
-      className={`inline-flex items-center gap-1 rounded px-1.5 py-0.5 font-mono text-xs tabular-nums ${
-        positive ? "bg-emerald-500/10 text-emerald-400" : "bg-red-500/10 text-red-400"
+      className={`inline-flex items-center gap-1 rounded-[5px] px-[7px] py-[3px] font-mono text-[11.5px] font-semibold tabular-nums tracking-tight ${
+        positive ? "bg-accent-soft text-accent" : "bg-danger-soft text-danger"
       }`}
     >
       {showIcon ? <Icon size={12} aria-hidden="true" /> : null}

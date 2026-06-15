@@ -15,17 +15,16 @@ export const GICS_SECTORS = [
 ] as const;
 
 /**
- * Maps a day-change percentage to a heatmap background class.
- * Green for gains, red for losses, intensity by magnitude.
+ * Maps a day-change percentage to an rgba heatmap fill, matching the
+ * prototype: mint green for gains, soft red for losses, alpha scaled by
+ * magnitude (capped at ±2.2%). Applied as an inline backgroundColor since
+ * the value is continuous and can't be a static Tailwind class.
  */
 export function heatmapColor(changePct: number): string {
-  if (changePct >= 2) return "bg-emerald-600";
-  if (changePct >= 0.5) return "bg-emerald-700";
-  if (changePct > 0) return "bg-emerald-900";
-  if (changePct === 0) return "bg-zinc-700";
-  if (changePct > -0.5) return "bg-red-900";
-  if (changePct > -2) return "bg-red-700";
-  return "bg-red-600";
+  const up = changePct >= 0;
+  const magnitude = Math.min(1, Math.abs(changePct) / 2.2);
+  const alpha = Number((0.1 + magnitude * 0.42).toFixed(2));
+  return up ? `rgba(43, 214, 138, ${alpha})` : `rgba(255, 92, 114, ${alpha})`;
 }
 
 export function sortRows<T extends MarketRow>(

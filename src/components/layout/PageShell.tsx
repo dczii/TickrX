@@ -11,7 +11,7 @@ interface PageShellProps {
 
 export default function PageShell({ children, email, avatarUrl }: PageShellProps) {
   return (
-    <div className="flex h-screen overflow-hidden bg-[var(--bg)] text-slate-100">
+    <div className="flex h-screen overflow-hidden bg-[var(--bg)] text-hi">
       <Sidebar email={email} avatarUrl={avatarUrl} />
       <div className="flex flex-1 flex-col overflow-hidden">
         <TopBar />

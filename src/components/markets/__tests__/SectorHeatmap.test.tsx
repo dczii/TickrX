@@ -29,7 +29,7 @@ describe("SectorHeatmap", () => {
     const cells = screen.getAllByRole("gridcell");
     const energy = cells.find((c) => c.getAttribute("data-change") === "3.1");
     const utilities = cells.find((c) => c.getAttribute("data-change") === "-2.4");
-    expect(energy?.className).toContain("bg-emerald-600");
-    expect(utilities?.className).toContain("bg-red-600");
+    expect(energy?.style.backgroundColor).toContain("rgba(43, 214, 138");
+    expect(utilities?.style.backgroundColor).toContain("rgba(255, 92, 114");
   });
 });

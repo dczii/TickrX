@@ -31,7 +31,7 @@ export default function Sidebar({ email, avatarUrl }: SidebarProps) {
   }
 
   return (
-    <aside className="flex h-full w-60 shrink-0 flex-col border-r border-zinc-800 bg-zinc-950 lg:w-60">
+    <aside className="flex h-full w-60 shrink-0 flex-col border-r border-edge bg-bg lg:w-60">
       <div className="flex h-16 items-center px-5">
         <Link href="/dashboard" aria-label="TickrX home">
           <Image src="/logo-full.png" alt="TickrX" width={120} height={40} priority />
@@ -47,9 +47,7 @@ export default function Sidebar({ email, avatarUrl }: SidebarProps) {
               href={href}
               aria-current={active ? "page" : undefined}
               className={`flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
-                active
-                  ? "bg-zinc-900 text-emerald-400"
-                  : "text-slate-400 hover:bg-zinc-900 hover:text-slate-100"
+                active ? "bg-surface-3 text-accent" : "text-mid hover:bg-surface hover:text-hi"
               }`}
             >
               <Icon size={18} aria-hidden="true" />
@@ -59,21 +57,21 @@ export default function Sidebar({ email, avatarUrl }: SidebarProps) {
         })}
       </nav>
 
-      <div className="border-t border-zinc-800 p-3">
+      <div className="border-t border-edge p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           {avatarUrl ? (
             <Image src={avatarUrl} alt="" width={32} height={32} className="rounded-full" />
           ) : (
-            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-sm font-semibold text-emerald-400">
+            <div className="flex h-8 w-8 items-center justify-center rounded-full bg-accent-soft text-sm font-semibold text-accent">
               {(email ?? "?").charAt(0).toUpperCase()}
             </div>
           )}
-          <span className="flex-1 truncate text-xs text-slate-400">{email ?? "Signed in"}</span>
+          <span className="flex-1 truncate text-xs text-mid">{email ?? "Signed in"}</span>
           <button
             type="button"
             onClick={handleSignOut}
             aria-label="Sign out"
-            className="text-slate-500 transition-colors hover:text-red-500"
+            className="text-dim transition-colors hover:text-danger"
           >
             <LogOut size={18} aria-hidden="true" />
           </button>

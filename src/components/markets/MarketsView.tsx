@@ -55,20 +55,20 @@ export default function MarketsView({
       <SearchModal onSearch={searchTickers} onSelect={(s) => toggle(s)} />
 
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-slate-100">Markets</h1>
-        <p className="text-xs text-slate-500">
-          Press <kbd className="rounded border border-zinc-700 px-1 font-mono">⌘K</kbd> to search
+        <h1 className="text-2xl font-bold text-hi">Markets</h1>
+        <p className="text-xs text-dim">
+          Press <kbd className="rounded border border-edge px-1 font-mono">⌘K</kbd> to search
         </p>
       </div>
 
       <div className="mt-6">
-        <h2 className="mb-2 text-xs uppercase tracking-wide text-slate-500">Sectors</h2>
+        <h2 className="eyebrow mb-2">Sector Heatmap</h2>
         <SectorHeatmap sectors={sectors} />
       </div>
 
       <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
-        <div className="rounded-xl border border-zinc-800 bg-[var(--surface)] p-4">
-          <div className="mb-3 inline-flex rounded-lg bg-zinc-900 p-1">
+        <div className="rounded-xl border border-edge bg-[var(--surface)] p-4">
+          <div className="mb-3 inline-flex rounded-lg bg-surface-2 p-1">
             {TABS.map((tab) => (
               <button
                 key={tab.id}
@@ -76,9 +76,7 @@ export default function MarketsView({
                 onClick={() => setView(tab.id === "all" ? null : tab.id)}
                 aria-pressed={view === tab.id}
                 className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
-                  view === tab.id
-                    ? "bg-zinc-800 text-emerald-400"
-                    : "text-slate-400 hover:text-slate-100"
+                  view === tab.id ? "bg-surface-3 text-accent" : "text-mid hover:text-hi"
                 }`}
               >
                 {tab.label}

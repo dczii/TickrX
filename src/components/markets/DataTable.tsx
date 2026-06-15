@@ -63,7 +63,7 @@ export default function DataTable<T>({
     <table className="w-full border-collapse text-sm">
       {caption ? <caption className="sr-only">{caption}</caption> : null}
       <thead>
-        <tr className="border-b border-zinc-800 text-xs uppercase tracking-wide text-slate-500">
+        <tr className="border-b border-edge text-xs uppercase tracking-wide text-dim">
           {columns.map((col) => {
             const active = sortKey === col.key;
             return (
@@ -77,9 +77,9 @@ export default function DataTable<T>({
                   <button
                     type="button"
                     onClick={() => toggleSort(col.key)}
-                    className={`inline-flex items-center gap-1 hover:text-slate-200 ${
+                    className={`inline-flex items-center gap-1 hover:text-hi ${
                       col.align === "right" ? "flex-row-reverse" : ""
-                    } ${active ? "text-emerald-400" : ""}`}
+                    } ${active ? "text-accent" : ""}`}
                   >
                     {col.label}
                     {active ? (
@@ -103,8 +103,8 @@ export default function DataTable<T>({
           <tr
             key={rowKey(row)}
             onClick={onRowClick ? () => onRowClick(row) : undefined}
-            className={`border-b border-zinc-900 ${
-              onRowClick ? "cursor-pointer hover:bg-zinc-900" : ""
+            className={`border-b border-edge-soft ${
+              onRowClick ? "cursor-pointer hover:bg-surface" : ""
             }`}
           >
             {columns.map((col) => (

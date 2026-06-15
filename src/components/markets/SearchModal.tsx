@@ -89,11 +89,11 @@ export default function SearchModal({ onSearch, onSelect, debounceMs = 250 }: Se
       onClick={() => setOpen(false)}
     >
       <div
-        className="w-full max-w-lg overflow-hidden rounded-xl border border-zinc-800 bg-[var(--surface)]"
+        className="w-full max-w-lg overflow-hidden rounded-xl border border-edge bg-[var(--surface)]"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex items-center gap-3 border-b border-zinc-800 px-4">
-          <Search size={16} aria-hidden="true" className="text-slate-500" />
+        <div className="flex items-center gap-3 border-b border-edge px-4">
+          <Search size={16} aria-hidden="true" className="text-dim" />
           <input
             ref={inputRef}
             value={query}
@@ -101,7 +101,7 @@ export default function SearchModal({ onSearch, onSelect, debounceMs = 250 }: Se
             onKeyDown={onInputKeyDown}
             placeholder="Search ticker or company…"
             aria-label="Search ticker or company"
-            className="flex-1 bg-transparent py-3 text-sm text-slate-100 outline-none"
+            className="flex-1 bg-transparent py-3 text-sm text-hi outline-none"
           />
         </div>
         <ul role="listbox" aria-label="Search results" className="max-h-72 overflow-y-auto">
@@ -112,16 +112,16 @@ export default function SearchModal({ onSearch, onSelect, debounceMs = 250 }: Se
                 onMouseEnter={() => setActiveIndex(index)}
                 onClick={() => select(result.symbol)}
                 className={`flex w-full items-center justify-between px-4 py-2 text-left text-sm ${
-                  index === activeIndex ? "bg-zinc-900" : ""
+                  index === activeIndex ? "bg-surface" : ""
                 }`}
               >
-                <span className="font-mono font-semibold text-slate-100">{result.symbol}</span>
-                <span className="truncate pl-3 text-slate-400">{result.name}</span>
+                <span className="font-mono font-semibold text-hi">{result.symbol}</span>
+                <span className="truncate pl-3 text-mid">{result.name}</span>
               </button>
             </li>
           ))}
           {query.trim() && results.length === 0 ? (
-            <li className="px-4 py-3 text-sm text-slate-500">No matches.</li>
+            <li className="px-4 py-3 text-sm text-dim">No matches.</li>
           ) : null}
         </ul>
       </div>
