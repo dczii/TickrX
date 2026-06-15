@@ -62,13 +62,7 @@ export default function Sidebar({ email, avatarUrl }: SidebarProps) {
       <div className="border-t border-zinc-800 p-3">
         <div className="flex items-center gap-3 rounded-lg px-2 py-2">
           {avatarUrl ? (
-            <Image
-              src={avatarUrl}
-              alt=""
-              width={32}
-              height={32}
-              className="rounded-full"
-            />
+            <Image src={avatarUrl} alt="" width={32} height={32} className="rounded-full" />
           ) : (
             <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/20 text-sm font-semibold text-emerald-400">
               {(email ?? "?").charAt(0).toUpperCase()}

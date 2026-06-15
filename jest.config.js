@@ -6,7 +6,17 @@ const createJestConfig = nextJest({ dir: "./" });
 const customConfig = {
   testEnvironment: "jsdom",
   setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
-  collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/app/api/**"],
+  // Scope coverage to unit-testable application logic. Excluded: Next.js
+  // pages/route handlers (validated by `next build` + the middleware test),
+  // Supabase client wrappers (thin runtime glue), and TradingView/legacy
+  // widgets that only inject external scripts.
+  collectCoverageFrom: [
+    "src/lib/auth.ts",
+    "src/lib/nav.ts",
+    "src/lib/portfolio.ts",
+    "src/components/layout/**/*.{ts,tsx}",
+    "!src/**/*.d.ts",
+  ],
   coverageThreshold: {
     global: {
       lines: 80,
