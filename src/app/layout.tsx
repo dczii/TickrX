@@ -1,25 +1,24 @@
+import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
 import { Analytics } from "@vercel/analytics/next";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
-import Header from "@/components/Header";
 import "./globals.css";
-import { TickerTape } from "@/components/TickrTape";
+
+const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
+const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
 
 export const metadata = {
-  title: "TickrX Tabs",
-  description: "Crypto & US Stocks tabs with API routes",
+  title: "TickrX",
+  description: "AI-powered stocks & crypto trading simulator",
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="h-full">
-      <body className="min-h-full text-slate-100">
-        <div className="px-2 md:px-4 2xl:px-0 mx-auto max-w-[1440px]">
-          <Header />
-          <TickerTape />
-          <div className="px-2 md:px-4 lg:px-0 py-10">{children}</div>
-        </div>
-        <Toaster position="top-right" richColors />
+    <html lang="en" className={`h-full ${geistSans.variable} ${geistMono.variable}`}>
+      <body className="min-h-full bg-[var(--bg)] text-slate-100">
+        <NuqsAdapter>{children}</NuqsAdapter>
+        <Toaster position="top-right" richColors theme="dark" />
         <Analytics />
       </body>
     </html>

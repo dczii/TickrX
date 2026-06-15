@@ -217,6 +217,82 @@
 
 ---
 
+## PageShell (web)
+
+- **File:** `src/components/layout/PageShell.tsx`
+- **Props:**
+  ```typescript
+  interface PageShellProps {
+    children: ReactNode;
+    email?: string | null;
+    avatarUrl?: string | null;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <PageShell email={user.email} avatarUrl={user.avatarUrl}>{children}</PageShell>
+  ```
+- **Used in:** `src/app/(app)/layout.tsx` — wraps all authenticated web pages
+- **Last updated:** 2026-06-15
+- **Notes:** Two-panel app shell (Sidebar + TopBar + scrollable `<main>`). Use for every authenticated page. Auth gating lives in the route-group layout, not here.
+
+---
+
+## Sidebar (web)
+
+- **File:** `src/components/layout/Sidebar.tsx`
+- **Props:**
+  ```typescript
+  interface SidebarProps {
+    email?: string | null;
+    avatarUrl?: string | null;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <Sidebar email={user.email} avatarUrl={user.avatarUrl} />
+  ```
+- **Used in:** PageShell
+- **Last updated:** 2026-06-15
+- **Notes:** Fixed `w-60` charcoal nav from `NAV_ITEMS` (`src/lib/nav.ts`) with Lucide icons, active-route highlight via `usePathname`, and a sign-out button. Renders inside PageShell — do not mount directly.
+
+---
+
+## TopBar (web)
+
+- **File:** `src/components/layout/TopBar.tsx`
+- **Props:** none
+- **Usage:**
+  ```tsx
+  <TopBar />
+  ```
+- **Used in:** PageShell
+- **Last updated:** 2026-06-15
+- **Notes:** TradingView ticker tape + cmd/ctrl+K search input (URL state via `nuqs` `q` param) + notifications bell. Reuses `TickerTape`.
+
+---
+
+## SectionPlaceholder (web)
+
+- **File:** `src/components/layout/SectionPlaceholder.tsx`
+- **Props:**
+  ```typescript
+  interface SectionPlaceholderProps {
+    title: string;
+    description: string;
+    comingIn: string;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <SectionPlaceholder title="Markets" description="Live prices and movers." comingIn="Phase 2.5" />
+  ```
+- **Used in:** Markets, Portfolio, Settings pages
+- **Last updated:** 2026-06-15
+- **Notes:** Dashed-border empty state for not-yet-built sections. Replace with real content as later phases land.
+
+---
+
 ## ScreenShell (mobile)
 
 - **File:** `apps/mobile/src/components/ScreenShell.tsx`

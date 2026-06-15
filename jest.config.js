@@ -5,7 +5,7 @@ const createJestConfig = nextJest({ dir: "./" });
 /** @type {import('jest').Config} */
 const customConfig = {
   testEnvironment: "jsdom",
-  setupFilesAfterFramework: ["<rootDir>/jest.setup.ts"],
+  setupFilesAfterEnv: ["<rootDir>/jest.setup.ts"],
   collectCoverageFrom: ["src/**/*.{ts,tsx}", "!src/**/*.d.ts", "!src/app/api/**"],
   coverageThreshold: {
     global: {
@@ -20,7 +20,6 @@ const customConfig = {
   },
   testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/apps/"],
   modulePathIgnorePatterns: ["<rootDir>/apps/"],
-  testPathPattern: ["<rootDir>/src/**/*.test.{ts,tsx}", "<rootDir>/__tests__/**/*.{ts,tsx}"],
 };
 
 module.exports = createJestConfig(customConfig);

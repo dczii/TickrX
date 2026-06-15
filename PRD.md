@@ -167,6 +167,64 @@ Once complete, use `gh pr create` to open a PR — this will trigger the full ag
 
 ---
 
+### Phase 1.5 — Web: Scaffold, Auth & Layout
+
+**Claude Code Prompt:**
+
+```
+Build the Next.js 15 (App Router) web shell for TickrX matching the prototype design.
+Implement: two-panel layout (240px left sidebar + flex-1 main), Supabase Auth with
+Google OAuth, dark terminal aesthetic (#030303 background, slate-900 surfaces, emerald-500
+accents, monospace numbers), and sidebar navigation (Home, Markets, Portfolio, Profile,
+Settings). Auto-create a $100,000 virtual portfolio row in Supabase on first login.
+
+Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
+Write Jest + Testing Library tests for every feature. All tests must pass.
+Once complete, use `gh pr create --title "[Phase 1.5] Web scaffold & auth" --body "Closes #issue"`.
+```
+
+**Layout spec (1440px desktop):**
+
+- Left sidebar: `w-60` fixed, dark charcoal (`bg-zinc-950`), logo + nav links + user avatar at bottom
+- Main content: `flex-1 overflow-y-auto`, padded `px-8 py-6`
+- Top bar: ticker tape scrolling across full width below sidebar top
+- Responsive: sidebar collapses to icon-only at `lg`, full hamburger menu at `md`
+
+**Design tokens (web):**
+
+| Token | Value |
+|---|---|
+| `--bg` | `#030303` |
+| `--surface` | `#0f0f0f` / `zinc-900` |
+| `--surface-2` | `slate-800` |
+| `--accent-green` | `emerald-500` (`#10b981`) |
+| `--accent-red` | `red-500` (`#ef4444`) |
+| `--text-primary` | `slate-100` |
+| `--text-muted` | `slate-400` |
+| `--font-mono` | `Geist Mono` |
+| `--border` | `zinc-800` |
+
+**Features:**
+
+- Supabase Auth: Google OAuth + email magic link
+- Protected routes via Next.js middleware (`/dashboard`, `/markets`, `/portfolio`, `/profile`)
+- Auth redirect: unauthenticated → `/login`, authenticated → `/dashboard`
+- Auto-create `portfolios` row in Supabase on first login (`$100,000` virtual balance)
+- `<Sidebar>` component: nav links with Lucide icons, active state, user avatar
+- `<TopBar>` component: live ticker tape, search input (cmd+k), notifications bell
+- `<PageShell>` layout wrapper used by all authenticated pages
+- NuqsAdapter for URL-based state (active tab, selected ticker)
+
+**Tests required:**
+
+- Google OAuth redirect flow (mock Supabase)
+- Portfolio row auto-creation on first login
+- Sidebar renders all nav links with correct icons
+- Protected route middleware redirects unauthenticated users
+- `<PageShell>` renders sidebar + main slot correctly
+
+---
+
 ### Phase 2 — Market Data & Watchlist
 
 **Claude Code Prompt:**
@@ -207,6 +265,54 @@ Write tests for all features. Open a PR when done.
 
 ---
 
+### Phase 2.5 — Web: Markets & Watchlist
+
+**Claude Code Prompt:**
+
+```
+Build the web Markets screen and Watchlist panel for TickrX at /markets and /watchlist.
+Implement: full-width data table of top movers (sortable columns), sector heatmap grid,
+debounced cmd+k search modal with live Polygon.io results, watchlist sidebar panel with
+add/remove, and live price ticks via Polygon.io WebSocket updating cells in-place.
+Match the prototype's dark terminal table aesthetic — tight rows, monospace prices,
+green/red change badges.
+
+Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
+Write tests for all features. Open a PR when done.
+```
+
+**Page: `/markets`**
+
+- Full-width sortable data table: Ticker | Name | Price | Change % | Volume | Market Cap | 52w High/Low
+- Columns sortable client-side with visual sort arrow
+- Sector heatmap: 11 GICS sectors as coloured tiles (green→red gradient by day change %)
+- Top Gainers / Top Losers tabs: 10-row tables with sparkline thumbnails
+- Live price update: WebSocket ticks highlight changed cells with brief green/red flash
+
+**Page: `/watchlist`**
+
+- Two-column layout: watchlist ticker list (left, 360px) + selected ticker mini-chart (right)
+- Add ticker via search; remove with hover X button
+- Persisted in Supabase `watchlists` table, synced in real-time via Supabase Realtime
+
+**Shared web components:**
+
+- `<DataTable>` — sortable, paginated, keyboard-navigable table primitive
+- `<SectorHeatmap>` — CSS grid, colour-coded tiles
+- `<SearchModal>` — cmd+k overlay, debounced Polygon.io search, keyboard navigation
+- `<PriceTick>` — price cell that flashes on WebSocket update
+- `<ChangeChip>` — `+2.4%` / `-1.1%` coloured badge
+
+**Tests required:**
+
+- Markets table renders and sorts by column
+- Sector heatmap tile colours match change % ranges
+- Search modal opens on cmd+k, filters results on input
+- Watchlist add/remove persists to Supabase
+- WebSocket price tick updates cell value and triggers flash class
+
+---
+
 ### Phase 3 — Stock Detail & Charting
 
 **Claude Code Prompt:**
@@ -244,6 +350,62 @@ Write tests for all features. Open a PR when done.
 - News feed loads and displays articles
 
 - WebView bridge message passing
+
+---
+
+### Phase 3.5 — Web: Stock Detail & Charting
+
+**Claude Code Prompt:**
+
+```
+Build the web Stock Detail page at /stock/[ticker] for TickrX. Use the three-column layout:
+left sidebar (existing), centre panel (TradingView Advanced Chart widget, full height), and
+right fixed panel (320px) with order ticket + fundamentals + news feed. Implement timeframe
+tabs (1m 5m 15m 1h 4h 1D 1W 1M), indicator toggles (SMA EMA RSI MACD Bollinger VWAP
+Volume), and Polygon.io news feed below. Match the dark terminal aesthetic — chart fills
+all available height with no padding bleed.
+
+Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
+Write tests for all features. Open a PR when done.
+```
+
+**Page: `/stock/[ticker]`**
+
+Three-column layout at 1440px:
+```
+[240px sidebar] | [flex-1 chart area] | [320px right panel]
+```
+
+**Centre panel — chart area:**
+
+- TradingView Advanced Chart widget (dark theme, `backgroundColor: #030303`)
+- Timeframe tab bar: `1m 5m 15m 1h 4h 1D 1W 1M` — clicking updates widget `interval`
+- Indicator toggle chips below tab bar: click to add/remove studies on the chart
+- Price header above chart: current price (large monospace), change $, change %, day range
+
+**Right panel (320px, `position: sticky top-0`):**
+
+- Ticker header: symbol, company name, exchange badge
+- Live price + change (updates via WebSocket)
+- Order ticket inline (collapsed by default, expands on Buy/Sell click) — covered fully in Phase 4.5
+- Fundamentals accordion: P/E, EPS, Market Cap, Dividend Yield, 52w Range, Earnings Date
+- Polygon.io news feed: last 5 articles with thumbnail, headline, source, timestamp
+
+**Web-specific components:**
+
+- `<StockPageHeader>` — price, change, day range across top of chart panel
+- `<TimeframeBar>` — tab strip that controls TradingView interval
+- `<IndicatorChips>` — toggleable chip row for chart studies
+- `<FundamentalsAccordion>` — collapsible fundamentals rows
+- `<NewsFeed>` — scrollable list of Polygon.io news items
+
+**Tests required:**
+
+- Timeframe tab click updates TradingView widget interval prop
+- Indicator toggle adds/removes study from active list
+- Fundamentals data renders with correct field labels
+- News feed displays articles sorted newest-first
+- Right panel sticks on scroll within the page
 
 ---
 
@@ -291,6 +453,63 @@ Write tests for all features including order execution logic in Cloud Functions.
 
 ---
 
+### Phase 4.5 — Web: Trading Engine & Portfolio
+
+**Claude Code Prompt:**
+
+```
+Build the web order ticket and Portfolio page for TickrX. The order ticket lives in the right
+panel of /stock/[ticker] — expand it inline (no modal) with Buy/Sell toggle, Market/Limit
+toggle, $ or Shares input, estimated total, and one-click Confirm button. Build /portfolio
+with a data-table of holdings (sortable by ticker, value, P&L, allocation %), summary stat
+cards (Total Value, Cash, Day P&L, Total P&L), a portfolio performance line chart vs S&P 500,
+and /trades for the full trade history log.
+
+Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
+Write tests for all features including order execution. Open a PR when done.
+```
+
+**Order ticket (right panel of `/stock/[ticker]`):**
+
+- Buy / Sell toggle (green / red active state)
+- Market / Limit order toggle; shows limit price input when Limit selected
+- Input by `$` amount or `Shares` — toggle updates the other field in real-time
+- Estimated total row, available cash row, fee row (simulated $0)
+- `Confirm [Buy/Sell]` button — calls Supabase Edge Function `execute-order`
+- After confirm: success toast, position updates in right panel without page reload
+
+**Page: `/portfolio`**
+
+- Four stat cards at top: `Total Value`, `Cash Balance`, `Day P&L`, `Total Return %`
+- Portfolio performance chart: line chart (Recharts) — portfolio value vs S&P 500 over time
+- Holdings table: Ticker | Shares | Avg Cost | Current Price | Market Value | P&L | P&L % | Allocation % — sortable columns, click row → navigates to `/stock/[ticker]`
+- Empty state: illustration + "Place your first trade" CTA button
+
+**Page: `/trades`**
+
+- Full trade history: Date | Ticker | Action | Shares | Price | Total | Realised P&L
+- Filterable by ticker, date range, action type
+- Export to CSV button
+
+**Web-specific components:**
+
+- `<OrderTicketPanel>` — inline order form in the right panel
+- `<StatCard>` — summary metric card (reuse from COMPONENT_REGISTRY if exists)
+- `<PortfolioChart>` — Recharts line chart with dual series (portfolio vs benchmark)
+- `<HoldingsTable>` — sortable holdings data table
+- `<TradeHistoryTable>` — filterable trade log with export
+
+**Tests required:**
+
+- Market order deducts correct balance from Supabase
+- Limit order creates pending record, fills at target price
+- P&L calculation accuracy (unit tests for edge cases)
+- Holdings table sorts by each column correctly
+- CSV export generates correct output
+- Insufficient funds shows error state without submitting
+
+---
+
 ### Phase 5 — Social, Gamification & Deployment
 
 **Claude Code Prompt:**
@@ -331,6 +550,69 @@ Write tests for all features. Open a PR when done.
 - Portfolio reset cooldown enforcement
 
 - EAS build configuration validation
+
+---
+
+### Phase 5.5 — Web: Social, Gamification & PWA
+
+**Claude Code Prompt:**
+
+```
+Build the web Leaderboard page at /leaderboard and full Profile page at /profile/[userId]
+for TickrX. Implement: weekly/all-time toggle leaderboard ranked by return %, XP progress
+bar and achievement badges grid on the profile page, copy-trade button on leaderboard rows
+(mirrors Phase 5 copy-trading logic), and portfolio reset flow. Then configure the Next.js
+app as a PWA (manifest, service worker, OG metadata) and deploy to Vercel with branch
+preview environments.
+
+Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
+Write tests for all features. Open a PR when done.
+```
+
+**Page: `/leaderboard`**
+
+- Weekly / All-time toggle tabs
+- Ranked table: Rank | Avatar | Username | Return % | Total Value | Trades | Copiers | Copy button
+- Top 3 rows highlighted with gold/silver/bronze badge treatment
+- Copy button opens `<CopyTradeSheet>` drawer (right-side panel, 400px) — amount input + stop-loss + Confirm
+- Search/filter bar: filter leaderboard by username
+
+**Page: `/profile/[userId]`**
+
+- Public profile header: avatar, username, join date, Popular Investor badge if earned
+- Stats row: Return %, Risk Score, # Copiers, # Following
+- XP progress bar with current level and next milestone
+- Achievements grid: badge icons (Lucide) + name + unlock date; locked badges shown greyed out
+- Recent trades feed: last 10 fills
+- "Copy Trader" / "Unfollow" CTA button
+- If own profile: Edit Profile button + Portfolio Reset button (with 7-day cooldown enforcement)
+
+**Web-specific components:**
+
+- `<LeaderboardTable>` — ranked table with medal badges on top 3
+- `<CopyTradeSheet>` — sliding right panel for configuring a copy
+- `<ProfileHeader>` — avatar, username, stats in one row
+- `<XPProgressBar>` — animated fill bar with level label
+- `<AchievementGrid>` — responsive grid of badge cards (earned vs locked)
+- `<ResetPortfolioModal>` — confirm dialog with cooldown remaining display
+
+**PWA & Deployment:**
+
+- `public/manifest.json`: name, icons (192/512), theme colour `#030303`, display `standalone`
+- Next.js `next-pwa` or manual service worker via `public/sw.js`
+- `next.config.ts` OG metadata: title, description, og:image (`/screens/overview.png`)
+- Vercel project: `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` env vars set
+- Branch preview environments auto-generated by Vercel GitHub integration
+- `robots.txt` and `sitemap.xml` generated at build time via `app/sitemap.ts`
+
+**Tests required:**
+
+- Leaderboard ranks users correctly by return % descending
+- Weekly vs all-time toggle fetches different time-range data
+- Copy trade sheet submits correct allocation to Supabase
+- Achievement unlock conditions checked for all 4 achievements
+- Portfolio reset enforces 7-day cooldown
+- PWA manifest includes required fields and correct icon paths
 
 ---
 
