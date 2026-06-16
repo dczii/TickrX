@@ -35,27 +35,27 @@ function StockAnalysis({ tickr }: Props) {
   if (!data) {
     return (
       <div className="flex justify-center items-center h-fit">
-        <TickrXSpinner size={120} accent="text-emerald-400" />
+        <TickrXSpinner size={120} accent="text-accent" />
       </div>
     );
   }
   return (
-    <div className="space-y-6 text-slate-100">
+    <div className="space-y-6 text-hi">
       {/* Bull Case */}
-      <Section title="🐂 Bull Case" items={data.bullCase} color="text-emerald-400" />
+      <Section title="🐂 Bull Case" items={data.bullCase} color="text-accent" />
 
       {/* Bear Case */}
-      <Section title="🐻 Bear Case" items={data.bearCase} color="text-red-400" />
+      <Section title="🐻 Bear Case" items={data.bearCase} color="text-danger" />
 
       {/* Warning Signs */}
       <Section title="⚠️ Warning Signs" items={data.warningSigns} color="text-yellow-400" />
 
       {/* Earnings */}
-      <div className="bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg">
+      <div className="bg-surface border border-edge p-6 rounded-2xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">📊 Last 5 Earnings Reports</h2>
         <div className="space-y-4">
           {data.earningsLast5?.map((e, i) => (
-            <details key={i} className="bg-slate-900 rounded-lg p-4 border border-slate-700">
+            <details key={i} className="bg-surface rounded-lg p-4 border border-edge">
               <summary className="cursor-pointer font-medium">{e.period}</summary>
               <div className="mt-2 text-sm space-y-2">
                 <p>
@@ -103,9 +103,9 @@ function StockAnalysis({ tickr }: Props) {
       </div>
 
       {/* Guidance & Outlook */}
-      <div className="bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg">
+      <div className="bg-surface border border-edge p-6 rounded-2xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">📈 Guidance & Outlook</h2>
-        <ul className="list-disc pl-6 space-y-1 text-slate-300">
+        <ul className="list-disc pl-6 space-y-1 text-mid">
           {data.guidanceOutlook.latestGuidance && (
             <li>
               <strong>Latest Guidance:</strong> {data.guidanceOutlook.latestGuidance}
@@ -135,10 +135,10 @@ function StockAnalysis({ tickr }: Props) {
       </div>
 
       {/* Final Assessment */}
-      <div className="bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg">
+      <div className="bg-surface border border-edge p-6 rounded-2xl shadow-lg">
         <h2 className="text-xl font-semibold mb-4">📝 Final Assessment</h2>
-        <p className="text-slate-300 mb-4">{data.finalAssessment.summary}</p>
-        <ul className="list-disc pl-6 space-y-1 text-slate-300">
+        <p className="text-mid mb-4">{data.finalAssessment.summary}</p>
+        <ul className="list-disc pl-6 space-y-1 text-mid">
           {data.finalAssessment.shortTerm && (
             <li>
               <strong>Short-term:</strong> {data.finalAssessment.shortTerm}
@@ -158,7 +158,7 @@ function StockAnalysis({ tickr }: Props) {
         {data.finalAssessment.actionables?.length ? (
           <div className="mt-4">
             <h3 className="font-semibold">Actionables</h3>
-            <ul className="list-disc pl-6 text-slate-300">
+            <ul className="list-disc pl-6 text-mid">
               {data.finalAssessment.actionables.map((a, i) => (
                 <li key={i}>{a}</li>
               ))}
@@ -168,7 +168,7 @@ function StockAnalysis({ tickr }: Props) {
         {data.finalAssessment.wouldChangeView?.length ? (
           <div className="mt-4">
             <h3 className="font-semibold">Would Change View</h3>
-            <ul className="list-disc pl-6 text-slate-300">
+            <ul className="list-disc pl-6 text-mid">
               {data.finalAssessment.wouldChangeView.map((w, i) => (
                 <li key={i}>{w}</li>
               ))}
@@ -186,9 +186,9 @@ export default memo(StockAnalysis);
 function Section({ title, items, color }: { title: string; items: string[]; color: string }) {
   if (!items?.length) return null;
   return (
-    <div className="bg-[rgba(1,93,83,0.3)] p-6 rounded-2xl shadow-lg">
+    <div className="bg-surface border border-edge p-6 rounded-2xl shadow-lg">
       <h2 className={`text-xl font-semibold mb-4 ${color}`}>{title}</h2>
-      <ul className="list-disc pl-6 space-y-1 text-slate-300">
+      <ul className="list-disc pl-6 space-y-1 text-mid">
         {items.map((item, i) => (
           <li key={i}>{item}</li>
         ))}

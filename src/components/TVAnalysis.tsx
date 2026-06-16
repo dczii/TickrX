@@ -17,7 +17,7 @@ function TradingViewWidget({ tickr }: Props) {
         {
           "colorTheme": "dark",
           "displayMode": "single",
-          "isTransparent": false,
+          "isTransparent": true,
           "locale": "en",
           "interval": "1D",
           "disableInterval": false,

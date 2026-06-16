@@ -26,14 +26,14 @@ const TickerRow = memo(function TickerRow({ item, isFavorite, onToggleFavorite }
 
   return (
     <div
-      className="grid grid-cols-13 px-4 py-3 hover:bg-slate-700 transition-colors cursor-pointer"
+      className="grid grid-cols-13 px-4 py-3 hover:bg-surface-3 transition-colors cursor-pointer"
       role="row"
       aria-label={`${item.symbol} ${item.name}`}
     >
       <div className="col-span-1 flex items-center">
         <button
           type="button"
-          className="text-gray-400 hover:text-gray-50 cursor-pointer hover:scale-110 transition"
+          className="text-dim hover:text-hi cursor-pointer hover:scale-110 transition"
           aria-pressed={isFavorite}
           aria-label={isFavorite ? "Remove from favorites" : "Add to favorites"}
           onClick={() => onToggleFavorite(item.symbol, !isFavorite)}
@@ -44,13 +44,13 @@ const TickerRow = memo(function TickerRow({ item, isFavorite, onToggleFavorite }
 
       <div className="col-span-3 font-semibold tabular-nums">{item.symbol}</div>
 
-      <div className="col-span-5 text-slate-300 truncate">{item.name}</div>
+      <div className="col-span-5 text-mid truncate">{item.name}</div>
 
       <div className="col-span-2 text-right tabular-nums">${formatCurrency(item.price)}</div>
 
       <div
         className={`col-span-2 flex items-center justify-end gap-1 tabular-nums ${
-          positive ? "text-emerald-400" : "text-red-400"
+          positive ? "text-accent" : "text-danger"
         }`}
       >
         <ChangeIcon className="h-4 w-4" aria-hidden="true" />

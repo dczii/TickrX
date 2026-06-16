@@ -36,9 +36,9 @@ function Stocks() {
   return (
     <div className="overflow-x-auto rounded-lg shadow-md">
       {data && <div className="mt-6">Data as of: {format(data?.generated_at, "PPpp")}</div>}
-      <table className="min-w-full rounded-lg border-collapse bg-slate-900 text-slate-100 mt-3 overflow-hidden">
+      <table className="min-w-full rounded-lg border-collapse bg-surface text-hi mt-3 overflow-hidden">
         <thead>
-          <tr className="bg-slate-800 text-left text-sm uppercase text-slate-400">
+          <tr className="bg-surface-2 text-left text-sm uppercase text-dim">
             <th className="px-4 py-3">Name</th>
             <th className="px-4 py-3">Symbol</th>
             <th className="px-4 py-3">Price</th>
@@ -47,7 +47,7 @@ function Stocks() {
         </thead>
         <tbody>
           {loading && (
-            <tr className="border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer">
+            <tr className="border-t border-edge hover:bg-surface-3 cursor-pointer">
               <td className="px-4 py-2">
                 <RowLoader />
               </td>
@@ -67,7 +67,7 @@ function Stocks() {
             stocks.map((stock, idx) => (
               <tr
                 key={idx}
-                className="border-t border-slate-700 hover:bg-slate-800/60 cursor-pointer"
+                className="border-t border-edge hover:bg-surface-3 cursor-pointer"
                 onClick={() => redirect(`/stock/${stock.symbol}`)}
               >
                 <td className="px-4 py-2 font-medium">{stock.name}</td>
@@ -76,9 +76,9 @@ function Stocks() {
                 <td
                   className={`px-4 py-2 font-semibold ${
                     stock.suggestion === "BUY"
-                      ? "text-emerald-400"
+                      ? "text-accent"
                       : stock.suggestion === "SELL"
-                        ? "text-red-400"
+                        ? "text-danger"
                         : "text-yellow-400"
                   }`}
                 >
