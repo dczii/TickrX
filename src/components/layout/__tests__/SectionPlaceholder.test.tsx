@@ -1,6 +1,15 @@
 import { render, screen } from "@testing-library/react";
+import { useRouter } from "next/navigation";
 
 import SectionPlaceholder from "@/components/layout/SectionPlaceholder";
+
+jest.mock("next/navigation", () => ({
+  useRouter: jest.fn(),
+}));
+
+beforeEach(() => {
+  (useRouter as jest.Mock).mockReturnValue({ back: jest.fn() });
+});
 
 describe("SectionPlaceholder", () => {
   it("renders the title, description, and arrival phase", () => {

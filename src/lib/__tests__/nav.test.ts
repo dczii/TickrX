@@ -1,26 +1,41 @@
-import { NAV_ITEMS } from "@/lib/nav";
+import { TAB_ITEMS, PROFILE_LINKS } from "@/lib/nav";
 
-describe("NAV_ITEMS", () => {
-  it("exposes the five primary destinations in order", () => {
-    expect(NAV_ITEMS.map((item) => item.label)).toEqual([
+describe("TAB_ITEMS", () => {
+  it("exposes the 4 bottom-tab destinations in order", () => {
+    expect(TAB_ITEMS.map((item) => item.label)).toEqual([
       "Home",
       "Markets",
       "Portfolio",
       "Profile",
-      "Settings",
     ]);
   });
 
-  it("points each link at its route with an icon", () => {
-    expect(NAV_ITEMS.map((item) => item.href)).toEqual([
+  it("points each tab at its route with an icon", () => {
+    expect(TAB_ITEMS.map((item) => item.href)).toEqual([
       "/dashboard",
       "/markets",
       "/portfolio",
       "/profile",
-      "/settings",
     ]);
-    for (const item of NAV_ITEMS) {
+    for (const item of TAB_ITEMS) {
       expect(item.icon).toBeDefined();
     }
+  });
+});
+
+describe("PROFILE_LINKS", () => {
+  it("exposes the secondary destinations reached from Profile", () => {
+    expect(PROFILE_LINKS.map((item) => item.label)).toEqual([
+      "Watchlist",
+      "Trade History",
+      "Leaderboard",
+      "Settings",
+    ]);
+    expect(PROFILE_LINKS.map((item) => item.href)).toEqual([
+      "/watchlist",
+      "/trades",
+      "/leaderboard",
+      "/settings",
+    ]);
   });
 });

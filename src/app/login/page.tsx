@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Mail } from "lucide-react";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 
 import { signInWithGoogle, signInWithMagicLink } from "@/lib/auth";
 
@@ -41,7 +41,7 @@ function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-sm rounded-2xl border border-zinc-800 bg-[var(--surface)] p-8">
+    <div className="w-full max-w-sm rounded-2xl border border-edge bg-[var(--surface)] p-8">
       <div className="mb-8 flex justify-center">
         <Image src="/logo-full.png" alt="TickrX" width={160} height={52} priority />
       </div>
@@ -50,16 +50,16 @@ function LoginForm() {
         type="button"
         onClick={handleGoogle}
         disabled={busy}
-        className="flex w-full items-center justify-center gap-3 rounded-lg border border-zinc-700 bg-zinc-900 px-4 py-3 text-sm font-medium text-slate-100 transition hover:bg-zinc-800 disabled:opacity-60"
+        className="flex w-full items-center justify-center gap-3 rounded-lg border border-edge bg-surface px-4 py-3 text-sm font-medium text-hi transition hover:bg-surface-3 disabled:opacity-60"
       >
         <GoogleIcon />
         Continue with Google
       </button>
 
-      <div className="my-6 flex items-center gap-3 text-xs text-slate-500">
-        <span className="h-px flex-1 bg-zinc-800" />
+      <div className="my-6 flex items-center gap-3 text-xs text-dim">
+        <span className="h-px flex-1 bg-surface-3" />
         or
-        <span className="h-px flex-1 bg-zinc-800" />
+        <span className="h-px flex-1 bg-surface-3" />
       </div>
 
       <form onSubmit={handleMagicLink} className="space-y-3">
@@ -70,12 +70,12 @@ function LoginForm() {
           onChange={(event) => setEmail(event.target.value)}
           placeholder="you@example.com"
           aria-label="Email address"
-          className="w-full rounded-lg border border-zinc-800 bg-zinc-900 px-4 py-3 text-sm text-slate-100 outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500"
+          className="w-full rounded-lg border border-edge bg-surface px-4 py-3 text-sm text-hi outline-none focus:border-accent focus:ring-1 focus:ring-accent"
         />
         <button
           type="submit"
           disabled={busy}
-          className="flex w-full items-center justify-center gap-2 rounded-lg bg-emerald-500 px-4 py-3 text-sm font-semibold text-black transition hover:brightness-110 disabled:opacity-60"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-accent px-4 py-3 text-sm font-semibold text-on-accent transition hover:brightness-110 disabled:opacity-60"
         >
           <Mail size={16} aria-hidden="true" />
           Email me a magic link
@@ -114,6 +114,7 @@ export default function LoginPage() {
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
+      <Toaster position="top-right" richColors theme="dark" />
     </main>
   );
 }

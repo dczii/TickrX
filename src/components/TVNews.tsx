@@ -20,7 +20,7 @@ function TVNews({ tickr }: Props) {
           "feedMode": "symbol",
           "symbol": "NASDAQ:${tickr}",
           "colorTheme": "dark",
-          "isTransparent": false,
+          "isTransparent": true,
           "locale": "en",
           "width": "100%",
           "height": 550

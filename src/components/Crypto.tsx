@@ -76,8 +76,8 @@ export default function Crypto() {
       {responseData && (
         <div className="mt-6">Data as of: {format(responseData?.timestamp, "PPpp")}</div>
       )}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/50 mt-3">
-        <div className="grid grid-cols-13 text-xs uppercase tracking-wide text-slate-400 px-4 py-3">
+      <div className="rounded-2xl border border-edge bg-surface mt-3">
+        <div className="grid grid-cols-13 text-xs uppercase tracking-wide text-dim px-4 py-3">
           {/* No title for favorite column */}
           <div className="col-span-1"></div>
           <div className="col-span-3">Symbol</div>
@@ -85,7 +85,7 @@ export default function Crypto() {
           <div className="col-span-2 text-right">Price</div>
           <div className="col-span-2 text-right">24h %</div>
         </div>
-        <div className="divide-y divide-slate-800">
+        <div className="divide-y divide-edge">
           {loading && (
             <div className="grid grid-cols-13 px-4 py-3 h-10">
               <div className="col-span-1"></div>

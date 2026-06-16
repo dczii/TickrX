@@ -1,4 +1,11 @@
+import Link from "next/link";
+import { ChevronRight } from "lucide-react";
+
 import { createClient } from "@/lib/supabase/server";
+import { PROFILE_LINKS } from "@/lib/nav";
+import ScreenHeader from "@/components/layout/ScreenHeader";
+import SignOutButton from "@/components/layout/SignOutButton";
+import Avatar from "@/components/ui/Avatar";
 
 export default async function ProfilePage() {
   const supabase = await createClient();
@@ -6,21 +13,38 @@ export default async function ProfilePage() {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const name = user?.email?.split("@")[0] ?? "Trader";
+
   return (
     <section>
-      <h1 className="text-2xl font-bold text-slate-100">Profile</h1>
-      <p className="mt-1 text-sm text-slate-400">Your account details.</p>
+      <ScreenHeader title="Profile" />
 
-      <dl className="mt-6 max-w-md space-y-3 rounded-xl border border-zinc-800 bg-[var(--surface)] p-5 text-sm">
-        <div className="flex justify-between">
-          <dt className="text-slate-500">Email</dt>
-          <dd className="text-slate-100">{user?.email ?? "—"}</dd>
+      <div className="px-5">
+        <div className="flex items-center gap-3 rounded-xl border border-edge bg-surface p-4">
+          <Avatar initials={name.slice(0, 2).toUpperCase()} />
+          <div className="min-w-0">
+            <p className="truncate text-sm font-semibold text-hi">{user?.email ?? "—"}</p>
+            <p className="truncate text-xs text-dim">{user?.id ?? "—"}</p>
+          </div>
         </div>
-        <div className="flex justify-between">
-          <dt className="text-slate-500">User ID</dt>
-          <dd className="tabular-nums text-slate-400">{user?.id ?? "—"}</dd>
+
+        <div className="mt-6 divide-y divide-[var(--border-soft)] rounded-xl border border-edge bg-surface">
+          {PROFILE_LINKS.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="flex items-center justify-between px-4 py-3 transition-colors hover:bg-surface-2"
+            >
+              <span className="text-sm font-medium text-hi">{link.label}</span>
+              <ChevronRight size={16} aria-hidden="true" className="text-dim" />
+            </Link>
+          ))}
         </div>
-      </dl>
+
+        <div className="mt-6">
+          <SignOutButton />
+        </div>
+      </div>
     </section>
   );
 }

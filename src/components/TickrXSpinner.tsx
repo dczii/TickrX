@@ -5,13 +5,13 @@ import React from "react";
 
 type TickrXSpinnerProps = {
   size?: number; // px
-  accent?: string; // e.g. "text-emerald-400"
+  accent?: string; // e.g. "text-accent"
   className?: string;
 };
 
 export default function TickrXSpinner({
   size = 32,
-  accent = "text-emerald-400",
+  accent = "text-accent",
   className = "",
 }: TickrXSpinnerProps) {
   const s = `${size}px`;

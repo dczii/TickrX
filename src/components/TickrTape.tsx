@@ -42,7 +42,7 @@ export function TickerTape() {
       colorTheme: "dark",
       locale: "en",
       largeChartUrl: "",
-      isTransparent: false,
+      isTransparent: true,
       showSymbolLogo: true,
       displayMode: "adaptive",
     });

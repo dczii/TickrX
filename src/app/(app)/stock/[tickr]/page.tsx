@@ -1,26 +1,46 @@
-import StockAnalysis from "@/components/StockAnalysis";
+import { createClient } from "@/lib/supabase/server";
+import { quoteFor, DEMO_PORTFOLIO } from "@/lib/demoData";
+import ScreenHeader from "@/components/layout/ScreenHeader";
 import TVNews from "@/components/TVNews";
-import TVAnalysis from "@/components/TVAnalysis";
-import TVChart from "@/components/TVChart";
-import AskStock from "@/components/AskStock";
+import StockChartPanel from "@/components/stock/StockChartPanel";
+import OrderTicketPanel from "@/components/stock/OrderTicketPanel";
+import Fundamentals from "@/components/stock/Fundamentals";
 
 export default async function Page({ params }: { params: Promise<{ tickr: string }> }) {
   const { tickr } = await params;
+  const symbol = tickr.toUpperCase();
+  const quote = quoteFor(symbol);
+
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { data: portfolio } = await supabase
+    .from("portfolios")
+    .select("cash_balance")
+    .eq("user_id", user?.id ?? "")
+    .maybeSingle();
+
+  const buyingPower = Number(portfolio?.cash_balance ?? DEMO_PORTFOLIO.buyingPower);
 
   return (
-    <div className="grid grid-cols-12 gap-4">
-      <div className="col-span-12">
-        <AskStock stock={tickr} />
-      </div>
-      <div className="col-span-12 h-[350px]">
-        <TVChart tickr={tickr} />
-      </div>
-      <div className="col-span-12 lg:col-span-8">
-        <StockAnalysis tickr={tickr.toUpperCase()} />
-      </div>
-      <div className="col-span-12 lg:col-span-4">
-        <TVAnalysis tickr={tickr.toUpperCase()} />
-        <TVNews tickr={tickr.toUpperCase()} />
+    <div>
+      <ScreenHeader back title={symbol} />
+      <div className="px-5">
+        <StockChartPanel
+          symbol={symbol}
+          name={quote.name}
+          price={quote.price}
+          changePct={quote.changePct}
+        />
+        <div className="mt-4 rounded-2xl border border-edge bg-surface p-2">
+          <TVNews tickr={symbol} />
+        </div>
+
+        <div className="mt-4 space-y-4">
+          <OrderTicketPanel symbol={symbol} price={quote.price} buyingPower={buyingPower} />
+          <Fundamentals symbol={symbol} price={quote.price} />
+        </div>
       </div>
     </div>
   );
