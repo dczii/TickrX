@@ -5,6 +5,7 @@ import {
   formatPrice,
   formatCompact,
   formatPercent,
+  formatUsd,
   mapSnapshot,
   mockMarketRows,
   mockSectors,
@@ -78,6 +79,11 @@ describe("formatters", () => {
   it("formats signed percentages", () => {
     expect(formatPercent(2.4)).toBe("+2.40%");
     expect(formatPercent(-1.1)).toBe("-1.10%");
+  });
+
+  it("formats USD with a dollar sign and grouping", () => {
+    expect(formatUsd(1234.5)).toBe("$1,234.50");
+    expect(formatUsd(0)).toBe("$0.00");
   });
 });
 

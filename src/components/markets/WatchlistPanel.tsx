@@ -22,7 +22,7 @@ export default function WatchlistPanel({
       </div>
       {symbols.length === 0 ? (
         <p className="px-4 py-6 text-sm text-dim">
-          No tickers yet. Star a row or use ⌘K to add one.
+          No tickers yet. Star a row or search to add one.
         </p>
       ) : (
         <ul aria-label="Watchlist tickers">

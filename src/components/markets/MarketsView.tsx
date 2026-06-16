@@ -1,13 +1,15 @@
 "use client";
 
-import { useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { useQueryState } from "nuqs";
+import { Search } from "lucide-react";
 
 import type { MarketRow, Sector, TickerSearchResult } from "@/types/markets";
 import { topMovers } from "@/lib/markets";
+import ScreenHeader from "@/components/layout/ScreenHeader";
 import SectorHeatmap from "@/components/markets/SectorHeatmap";
 import MarketsTable from "@/components/markets/MarketsTable";
-import WatchlistPanel from "@/components/markets/WatchlistPanel";
 import SearchModal from "@/components/markets/SearchModal";
 import { useWatchlist } from "@/components/markets/useWatchlist";
 
@@ -37,9 +39,21 @@ export default function MarketsView({
   sectors,
   initialWatchlist,
 }: MarketsViewProps) {
-  const { symbols, watched, toggle, remove } = useWatchlist(userId, initialWatchlist);
+  const router = useRouter();
+  const { watched, toggle } = useWatchlist(userId, initialWatchlist);
   const [view, setView] = useQueryState("view", { defaultValue: "all" });
-  const [selected, setSelected] = useQueryState("symbol");
+  const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    function onKeyDown(event: KeyboardEvent) {
+      if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
+        event.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    }
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
 
   const rows =
     view === "gainers"
@@ -48,59 +62,63 @@ export default function MarketsView({
         ? topMovers(initialRows, "losers")
         : initialRows;
 
-  const onSelectSymbol = useCallback((symbol: string) => setSelected(symbol), [setSelected]);
+  const onSelectSymbol = useCallback(
+    (symbol: string) => router.push(`/stock/${symbol}`),
+    [router]
+  );
 
   return (
     <section>
-      <SearchModal onSearch={searchTickers} onSelect={(s) => toggle(s)} />
+      <ScreenHeader
+        title="Markets"
+        right={
+          <button
+            type="button"
+            onClick={() => setSearchOpen(true)}
+            aria-label="Search ticker"
+            className="text-mid transition-colors hover:text-hi"
+          >
+            <Search size={20} aria-hidden="true" />
+          </button>
+        }
+      />
 
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold text-hi">Markets</h1>
-        <p className="text-xs text-dim">
-          Press <kbd className="rounded border border-edge px-1 font-mono">⌘K</kbd> to search
-        </p>
-      </div>
-
-      <div className="mt-6">
+      <div className="px-5">
         <h2 className="eyebrow mb-2">Sector Heatmap</h2>
         <SectorHeatmap sectors={sectors} />
-      </div>
 
-      <div className="mt-8 grid gap-6 lg:grid-cols-[1fr_300px]">
-        <div className="rounded-xl border border-edge bg-[var(--surface)] p-4">
-          <div className="mb-3 inline-flex rounded-lg bg-surface-2 p-1">
-            {TABS.map((tab) => (
-              <button
-                key={tab.id}
-                type="button"
-                onClick={() => setView(tab.id === "all" ? null : tab.id)}
-                aria-pressed={view === tab.id}
-                className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
-                  view === tab.id ? "bg-surface-3 text-accent" : "text-mid hover:text-hi"
-                }`}
-              >
-                {tab.label}
-              </button>
-            ))}
-          </div>
-
-          <div className="overflow-x-auto">
-            <MarketsTable
-              rows={rows}
-              watched={watched}
-              onToggleWatch={(s) => toggle(s)}
-              onSelectSymbol={onSelectSymbol}
-            />
-          </div>
+        <div className="mt-6 mb-3 inline-flex rounded-lg bg-surface-2 p-1">
+          {TABS.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => setView(tab.id === "all" ? null : tab.id)}
+              aria-pressed={view === tab.id}
+              className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
+                view === tab.id ? "bg-surface-3 text-accent" : "text-mid hover:text-hi"
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
 
-        <WatchlistPanel
-          symbols={symbols}
-          selected={selected}
-          onSelect={onSelectSymbol}
-          onRemove={(s) => remove(s)}
-        />
+        <div className="-mx-5 overflow-x-auto px-5 pb-4">
+          <MarketsTable
+            rows={rows}
+            watched={watched}
+            onToggleWatch={(s) => toggle(s)}
+            onSelectSymbol={onSelectSymbol}
+          />
+        </div>
       </div>
+
+      <SearchModal
+        open={searchOpen}
+        onClose={() => setSearchOpen(false)}
+        onSearch={searchTickers}
+        onSelect={onSelectSymbol}
+      />
     </section>
   );
 }

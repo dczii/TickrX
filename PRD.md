@@ -174,8 +174,9 @@ Once complete, use `gh pr create` to open a PR — this will trigger the full ag
 ```
 Build the Next.js 15 (App Router) web shell for TickrX matching the prototype design.
 Implement: two-panel layout (240px left sidebar + flex-1 main), Supabase Auth with
-Google OAuth, dark terminal aesthetic (#030303 background, slate-900 surfaces, emerald-500
-accents, monospace numbers), and sidebar navigation (Home, Markets, Portfolio, Profile,
+Google OAuth, the prototype's warm-charcoal terminal aesthetic (#0A0B0D background,
+#131519 surfaces, mint #2BD68A accent, soft red #FF5C72, Geist + Geist Mono), and
+sidebar navigation (Home, Markets, Watchlist, Portfolio, Trades, Leaderboard, Profile,
 Settings). Auto-create a $100,000 virtual portfolio row in Supabase on first login.
 
 Before writing any component, read COMPONENT_REGISTRY.md and reuse existing components.
@@ -183,26 +184,47 @@ Write Jest + Testing Library tests for every feature. All tests must pass.
 Once complete, use `gh pr create --title "[Phase 1.5] Web scaffold & auth" --body "Closes #issue"`.
 ```
 
+> **Web data layer (authoritative for all `*.5` web phases):** the web app uses
+> **Supabase** — Postgres tables (`portfolios`, `watchlists`, `trades`), Supabase
+> Auth (Google OAuth + magic link), Supabase Realtime for live sync, and Supabase
+> Edge Functions for order execution. The Firebase/Firestore references in the
+> mobile phases and the global Tech Stack / Repository Structure tables below apply
+> to the React Native app only; where they conflict with a web phase, the web phase
+> (Supabase) wins. Live prices come from Polygon.io (REST + WebSocket) on both
+> platforms.
+
 **Layout spec (1440px desktop):**
 
-- Left sidebar: `w-60` fixed, dark charcoal (`bg-zinc-950`), logo + nav links + user avatar at bottom
+- Left sidebar: `w-60` fixed, charcoal (`bg-[var(--bg)]`), logo + nav links + user avatar at bottom
 - Main content: `flex-1 overflow-y-auto`, padded `px-8 py-6`
 - Top bar: ticker tape scrolling across full width below sidebar top
 - Responsive: sidebar collapses to icon-only at `lg`, full hamburger menu at `md`
 
-**Design tokens (web):**
+**Design tokens (web) — exported from the prototype's `SA` palette (`TickrX_Prototype.html`), implemented in `src/app/globals.css`:**
 
 | Token | Value |
 |---|---|
-| `--bg` | `#030303` |
-| `--surface` | `#0f0f0f` / `zinc-900` |
-| `--surface-2` | `slate-800` |
-| `--accent-green` | `emerald-500` (`#10b981`) |
-| `--accent-red` | `red-500` (`#ef4444`) |
-| `--text-primary` | `slate-100` |
-| `--text-muted` | `slate-400` |
+| `--bg` | `#0A0B0D` |
+| `--surface` | `#131519` |
+| `--surface-2` | `#1A1D23` |
+| `--surface-3` | `#22262E` |
+| `--border` | `#262A31` |
+| `--border-soft` | `#1C1F25` |
+| `--hi` (text primary) | `#E8EAED` |
+| `--mid` (text muted) | `#9BA1AC` |
+| `--dim` | `#5C636E` |
+| `--accent` (green) | `#2BD68A` |
+| `--accent-soft` | `rgba(43,214,138,0.14)` |
+| `--danger` (red) | `#FF5C72` |
+| `--danger-soft` | `rgba(255,92,114,0.14)` |
+| `--amber` | `#E8B339` |
+| `--info` (blue) | `#5B8DEF` |
+| `--font-sans` | `Geist` |
 | `--font-mono` | `Geist Mono` |
-| `--border` | `zinc-800` |
+
+> The earlier `#030303` / emerald / slate token set did not match the approved
+> prototype and has been superseded by the `SA` palette above. A light theme
+> (`THEME.light` in the prototype) is a future Settings option.
 
 **Features:**
 
@@ -210,8 +232,8 @@ Once complete, use `gh pr create --title "[Phase 1.5] Web scaffold & auth" --bod
 - Protected routes via Next.js middleware (`/dashboard`, `/markets`, `/portfolio`, `/profile`)
 - Auth redirect: unauthenticated → `/login`, authenticated → `/dashboard`
 - Auto-create `portfolios` row in Supabase on first login (`$100,000` virtual balance)
-- `<Sidebar>` component: nav links with Lucide icons, active state, user avatar
-- `<TopBar>` component: live ticker tape, search input (cmd+k), notifications bell
+- `<Sidebar>` component: nav links with Lucide icons (Home, Markets, Watchlist, Portfolio, Trades, Leaderboard, Profile, Settings), active state, user avatar
+- `<TopBar>` component: live ticker tape, single global ⌘K search trigger that opens the shared `<SearchModal>` (selecting a result navigates to `/stock/[ticker]`), notifications bell
 - `<PageShell>` layout wrapper used by all authenticated pages
 - NuqsAdapter for URL-based state (active tab, selected ticker)
 
@@ -310,6 +332,28 @@ Write tests for all features. Open a PR when done.
 - Search modal opens on cmd+k, filters results on input
 - Watchlist add/remove persists to Supabase
 - WebSocket price tick updates cell value and triggers flash class
+
+---
+
+### Web parity build — implementation status
+
+To bring the web app to full visual parity with the prototype ahead of the live
+trading engine, the following screens are built with the prototype's demo
+fixtures (`src/lib/demoData.ts`) and swap to live Supabase/Polygon data when
+Phases 4.5/5.5 land:
+
+| Screen | Route | Status | Live in |
+|---|---|---|---|
+| Home dashboard (value card + area chart, top movers, watchlist preview) | `/dashboard` | Live portfolio cash + watchlist; demo movers/sparklines | — |
+| Stock detail (3-col: price header, timeframe tabs, chart, order ticket, fundamentals, news) | `/stock/[ticker]` | Chart + news live (TradingView); order ticket simulates fills via toast; fundamentals demo | Phase 3.5 / 4.5 |
+| Portfolio (stat cards, performance chart, sortable holdings) | `/portfolio` | Demo holdings/P&L | Phase 4.5 |
+| Trade history | `/trades` | Demo fills | Phase 4.5 |
+| Leaderboard (weekly/all-time, medals, copy) | `/leaderboard` | Demo leaders; copy fires toast | Phase 5.5 |
+
+Shared web primitives added: `<Sparkline>`, `<AreaChart>` (seeded SVG charts
+mirroring the prototype), `<StatCard>`, `<Avatar>`, `<OrderTicketPanel>`,
+`<HoldingsTable>`, `<LeaderboardView>`. Charts use `src/lib/charts.ts`
+(`rng`/`walk`/`toPolyline`).
 
 ---
 

@@ -4,7 +4,7 @@ import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Image from "next/image";
 import { Mail } from "lucide-react";
-import { toast } from "sonner";
+import { Toaster, toast } from "sonner";
 
 import { signInWithGoogle, signInWithMagicLink } from "@/lib/auth";
 
@@ -114,6 +114,7 @@ export default function LoginPage() {
       <Suspense fallback={null}>
         <LoginForm />
       </Suspense>
+      <Toaster position="top-right" richColors theme="dark" />
     </main>
   );
 }

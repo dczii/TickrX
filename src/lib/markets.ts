@@ -64,6 +64,10 @@ export function formatPercent(value: number): string {
   return `${value >= 0 ? "+" : ""}${value.toFixed(2)}%`;
 }
 
+export function formatUsd(value: number): string {
+  return `$${value.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+}
+
 interface PolygonSnapshotTicker {
   ticker: string;
   todaysChangePerc?: number;

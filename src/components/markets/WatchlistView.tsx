@@ -2,6 +2,7 @@
 
 import { useQueryState } from "nuqs";
 
+import ScreenHeader from "@/components/layout/ScreenHeader";
 import TVChart from "@/components/TVChart";
 import WatchlistPanel from "@/components/markets/WatchlistPanel";
 import { useWatchlist } from "@/components/markets/useWatchlist";
@@ -19,10 +20,9 @@ export default function WatchlistView({ userId, initialWatchlist }: WatchlistVie
 
   return (
     <section>
-      <h1 className="text-2xl font-bold text-hi">Watchlist</h1>
-      <p className="mt-1 text-sm text-mid">Track tickers and view live charts.</p>
+      <ScreenHeader back title="Watchlist" />
 
-      <div className="mt-6 grid gap-6 lg:grid-cols-[360px_1fr]">
+      <div className="px-5">
         <WatchlistPanel
           symbols={symbols}
           selected={active}
@@ -30,9 +30,9 @@ export default function WatchlistView({ userId, initialWatchlist }: WatchlistVie
           onRemove={(s) => remove(s)}
         />
 
-        <div className="min-h-[400px] rounded-xl border border-edge bg-[var(--surface)] p-4">
+        <div className="mt-4 min-h-[300px] rounded-xl border border-edge bg-[var(--surface)] p-4">
           {active ? (
-            <div className="h-[400px]">
+            <div className="h-[300px]">
               <TVChart tickr={active} />
             </div>
           ) : (

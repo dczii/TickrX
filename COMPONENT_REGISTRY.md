@@ -85,6 +85,8 @@
 - **Props:**
   ```typescript
   interface SearchModalProps {
+    open: boolean;
+    onClose: () => void;
     onSearch: (query: string) => Promise<{ symbol: string; name: string }[]>;
     onSelect: (symbol: string) => void;
     debounceMs?: number;
@@ -92,11 +94,11 @@
   ```
 - **Usage:**
   ```tsx
-  <SearchModal onSearch={searchTickers} onSelect={(s) => toggle(s)} />
+  <SearchModal open={open} onClose={() => setOpen(false)} onSearch={searchTickers} onSelect={onSelect} />
   ```
 - **Used in:** MarketsView
-- **Last updated:** 2026-06-15
-- **Notes:** ⌘K/Ctrl+K overlay, debounced search, arrow-key navigation, Escape to close. Pass an async `onSearch`; results are keyboard-selectable.
+- **Last updated:** 2026-06-16
+- **Notes:** Full-screen sheet (not a centered dialog) confined to the phone frame via `PhoneShell`'s containing-block trick. Open/close owned by the caller; MarketsView owns the single ⌘K listener and the search-icon trigger. Debounced search, arrow-key navigation, Escape/backdrop/Cancel to close. Do NOT add a second ⌘K listener elsewhere.
 
 ---
 
@@ -322,58 +324,82 @@
 
 ---
 
-## PageShell (web)
+## PhoneShell (web)
 
-- **File:** `src/components/layout/PageShell.tsx`
-- **Props:**
-  ```typescript
-  interface PageShellProps {
-    children: ReactNode;
-    email?: string | null;
-    avatarUrl?: string | null;
-  }
-  ```
+- **File:** `src/components/layout/PhoneShell.tsx`
+- **Props:** `{ children: ReactNode }`
 - **Usage:**
   ```tsx
-  <PageShell email={user.email} avatarUrl={user.avatarUrl}>{children}</PageShell>
+  <PhoneShell>{children}</PhoneShell>
   ```
 - **Used in:** `src/app/(app)/layout.tsx` — wraps all authenticated web pages
-- **Last updated:** 2026-06-15
-- **Notes:** Two-panel app shell (Sidebar + TopBar + scrollable `<main>`). Use for every authenticated page. Auth gating lives in the route-group layout, not here.
+- **Last updated:** 2026-06-16
+- **Notes:** Literal phone-frame mockup (bezel, notch, rounded `phone-screen`) matching the TickrX prototype, centered on the page. Bezel chrome only renders at `sm:` (≥640px); below that the screen fills the viewport edge-to-edge since a real mobile browser has its own chrome. `phone-screen` uses `transform-gpu` so any `position: fixed` descendant (the `Toaster`, `SearchModal`'s full-screen sheet) is confined to the frame instead of the whole viewport. Stacks `StatusBar` → scrollable `<main>` → `TabBar` → `Toaster`. Auth gating lives in the route-group layout, not here.
 
 ---
 
-## Sidebar (web)
+## StatusBar (web)
 
-- **File:** `src/components/layout/Sidebar.tsx`
-- **Props:**
-  ```typescript
-  interface SidebarProps {
-    email?: string | null;
-    avatarUrl?: string | null;
-  }
-  ```
-- **Usage:**
-  ```tsx
-  <Sidebar email={user.email} avatarUrl={user.avatarUrl} />
-  ```
-- **Used in:** PageShell
-- **Last updated:** 2026-06-15
-- **Notes:** Fixed `w-60` charcoal nav from `NAV_ITEMS` (`src/lib/nav.ts`) with Lucide icons, active-route highlight via `usePathname`, and a sign-out button. Renders inside PageShell — do not mount directly.
-
----
-
-## TopBar (web)
-
-- **File:** `src/components/layout/TopBar.tsx`
+- **File:** `src/components/layout/StatusBar.tsx`
 - **Props:** none
 - **Usage:**
   ```tsx
-  <TopBar />
+  <StatusBar />
   ```
-- **Used in:** PageShell
-- **Last updated:** 2026-06-15
-- **Notes:** TradingView ticker tape + cmd/ctrl+K search input (URL state via `nuqs` `q` param) + notifications bell. Reuses `TickerTape`.
+- **Used in:** PhoneShell
+- **Last updated:** 2026-06-16
+- **Notes:** iOS-style status bar — live local time (updates every 30s) + hand-rolled inline SVG signal/wifi/battery glyphs (decorative OS chrome, not app icons, so plain SVG instead of `lucide-react` here). Hidden below the `sm:` bezel breakpoint. Renders inside PhoneShell — do not mount directly.
+
+---
+
+## TabBar (web)
+
+- **File:** `src/components/layout/TabBar.tsx`
+- **Props:** none
+- **Usage:**
+  ```tsx
+  <TabBar />
+  ```
+- **Used in:** PhoneShell
+- **Last updated:** 2026-06-16
+- **Notes:** Bottom 4-tab nav (Home/Markets/Portfolio/Profile) from `TAB_ITEMS` (`src/lib/nav.ts`) with Lucide icons, active-route highlight via `usePathname`, plus the home-indicator pill. Renders inside PhoneShell — do not mount directly.
+
+---
+
+## ScreenHeader (web)
+
+- **File:** `src/components/layout/ScreenHeader.tsx`
+- **Props:**
+  ```typescript
+  interface ScreenHeaderProps {
+    title: ReactNode;
+    subtitle?: ReactNode;
+    back?: boolean;
+    right?: ReactNode;
+  }
+  ```
+- **Usage:**
+  ```tsx
+  <ScreenHeader title="Markets" right={<SearchButton />} />
+  <ScreenHeader back title="AAPL" />
+  ```
+- **Used in:** Every `(app)` page — root tabs (Home/Markets/Portfolio/Profile) use `back={false}` with a greeting/title + actions; sub-screens (stock detail, trades, leaderboard, settings, watchlist) use `back` for a chevron + centered title.
+- **Last updated:** 2026-06-16
+- **Notes:** Shared header pattern matching the prototype. `back` mode calls `router.back()` — always render from a page/component that's reachable via in-app navigation, not a deep link with no history.
+
+---
+
+## SignOutButton (web)
+
+- **File:** `src/components/layout/SignOutButton.tsx`
+- **Props:** none
+- **Usage:**
+  ```tsx
+  <SignOutButton />
+  ```
+- **Used in:** Profile (`/profile`)
+- **Last updated:** 2026-06-16
+- **Notes:** Calls `signOut()` from `@/lib/auth`, redirects to `/login` on success, `toast.error` on failure.
 
 ---
 
@@ -392,9 +418,99 @@
   ```tsx
   <SectionPlaceholder title="Markets" description="Live prices and movers." comingIn="Phase 2.5" />
   ```
-- **Used in:** Markets, Portfolio, Settings pages
-- **Last updated:** 2026-06-15
-- **Notes:** Dashed-border empty state for not-yet-built sections. Replace with real content as later phases land.
+- **Used in:** Settings page (Portfolio/Markets now built)
+- **Last updated:** 2026-06-16
+- **Notes:** Renders `ScreenHeader back` for the title + a dashed-border empty state for not-yet-built sections. Replace with real content as later phases land.
+
+---
+
+## Sparkline (web)
+
+- **File:** `src/components/charts/Sparkline.tsx`
+- **Props:** `{ seed: number; positive?: boolean; width?: number; height?: number; fill?: boolean }`
+- **Used in:** Dashboard (top movers, watchlist preview)
+- **Last updated:** 2026-06-16
+- **Notes:** Seeded SVG sparkline mirroring the prototype. Deterministic per `seed`. Green/red by `positive`. Geometry from `src/lib/charts.ts`.
+
+---
+
+## AreaChart (web)
+
+- **File:** `src/components/charts/AreaChart.tsx`
+- **Props:** `{ seed?: number; positive?: boolean; width?: number; height?: number; className?: string }`
+- **Used in:** Dashboard (portfolio value), Portfolio (performance)
+- **Last updated:** 2026-06-16
+- **Notes:** Seeded gradient area chart, fills container width. Geometry from `src/lib/charts.ts`. Use for any performance/value-over-time visual until live OHLC is wired.
+
+---
+
+## StatCard (web)
+
+- **File:** `src/components/ui/StatCard.tsx`
+- **Props:** `{ label: string; value: ReactNode; sub?: ReactNode; tone?: "up" | "down" | "neutral" }`
+- **Used in:** Portfolio (summary cards)
+- **Last updated:** 2026-06-16
+- **Notes:** Summary metric card with eyebrow label, mono value, toned sub-line. Reuse for Profile stats.
+
+---
+
+## Avatar (web)
+
+- **File:** `src/components/ui/Avatar.tsx`
+- **Props:** `{ initials: string; hue?: number; size?: number }`
+- **Used in:** Dashboard, Leaderboard, Trades
+- **Last updated:** 2026-06-16
+- **Notes:** Deterministic HSL-tinted initials badge mirroring the prototype's `Avatar`.
+
+---
+
+## OrderTicketPanel (web)
+
+- **File:** `src/components/stock/OrderTicketPanel.tsx`
+- **Props:** `{ symbol: string; price: number; buyingPower: number }`
+- **Used in:** Stock detail right panel (`/stock/[ticker]`)
+- **Last updated:** 2026-06-16
+- **Notes:** Inline buy/sell ticket — market/limit toggle, $/shares input, est. shares/total, insufficient-funds guard, confirm fires a sonner toast. Swap the confirm handler for the Supabase `execute-order` Edge Function in Phase 4.5.
+
+---
+
+## StockChartPanel (web)
+
+- **File:** `src/components/stock/StockChartPanel.tsx`
+- **Props:** `{ symbol: string; name: string; price: number; changePct: number }`
+- **Used in:** Stock detail (`/stock/[ticker]`)
+- **Last updated:** 2026-06-16
+- **Notes:** Price header + timeframe tab bar (1m…1M) that drives the `TVChart` `interval` prop. Reuses `TVChart`.
+
+---
+
+## Fundamentals (web)
+
+- **File:** `src/components/stock/Fundamentals.tsx`
+- **Props:** `{ symbol: string; price: number }`
+- **Used in:** Stock detail right panel
+- **Last updated:** 2026-06-16
+- **Notes:** Static demo fundamentals list. Replace values with Polygon fundamentals in Phase 3.5.
+
+---
+
+## HoldingsTable (web)
+
+- **File:** `src/components/portfolio/HoldingsTable.tsx`
+- **Props:** `{ holdings: Holding[]; totalValue: number }`
+- **Used in:** Portfolio (`/portfolio`)
+- **Last updated:** 2026-06-16
+- **Notes:** Sortable holdings table built on `DataTable`. Computes avg cost + allocation %. Row click → `/stock/[ticker]`. Reuses `DataTable`, `ChangeChip`.
+
+---
+
+## LeaderboardView (web)
+
+- **File:** `src/components/leaderboard/LeaderboardView.tsx`
+- **Props:** `{ leaders: Leader[] }`
+- **Used in:** Leaderboard (`/leaderboard`)
+- **Last updated:** 2026-06-16
+- **Notes:** Weekly/all-time toggle, medal treatment for top 3, current-user highlight, copy button (fires toast). Reuses `Avatar`. Wire copy to Supabase in Phase 5.5.
 
 ---
 
